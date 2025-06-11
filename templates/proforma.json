@@ -1,0 +1,34 @@
+{
+    "fecha": "2025-06-11",
+    "cliente": "IMPORTADORA GLOBAL S.A.",
+    "invoice": "INV-2025-001234",
+    "xp": "XP-789456123",
+    "po": "PO-CLIENT-987654",
+    "vessel": "MV PACIFIC TRADER",
+    "shipping_date": "2025-06-15",
+    "port": "Puerto de Valparaíso, Chile",
+    "destino": "Puerto de Los Angeles, USA",
+    "container": "TCLU-1234567-8",
+    "firma": "Juan Carlos Pérez - Export Manager",
+    "productos": [
+        {
+            "cantidad": "1,500.00",
+            "descripcion": "Fresh Apples Red Delicious - Premium Grade",
+            "precio_unitario": "US$ 2.85",
+            "total": "US$ 4,275.00"
+        },
+        {
+            "cantidad": "2,200.00",
+            "descripcion": "Fresh Cherries Sweet - Export Quality",
+            "precio_unitario": "US$ 8.50",
+            "total": "US$ 18,700.00"
+        },
+        {
+            "cantidad": "850.00",
+            "descripcion": "Fresh Grapes Green Seedless",
+            "precio_unitario": "US$ 3.20",
+            "total": "US$ 2,720.00"
+        }
+    ],
+    "total_general": "25,695.00"
+}

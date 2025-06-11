@@ -1,0 +1,33 @@
+# Node.js
+node_modules/
+
+# Directorios de compilación
+dist/
+build/
+
+# Archivos de entorno
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# Archivos generados
+*.tsbuildinfo
+
+# Archivos de OS
+.DS_Store
+Thumbs.db
+
+# Archivos de IDE
+.vscode/
+.idea/
+
+# Archivos de prueba
+coverage/
+
+# Archivos de Docker
+docker-compose.yml
+Dockerfile
