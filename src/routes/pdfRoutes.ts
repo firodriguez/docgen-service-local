@@ -4,7 +4,10 @@ import logger from '../services/logger';
 import { validateToken } from '../middleware/auth';
 import path from 'path';
 import fs from 'fs';
+<<<<<<< HEAD
 import handlebars from 'handlebars';
+=======
+>>>>>>> origin/main
 
 const router = Router();
 
@@ -14,6 +17,7 @@ const templateExists = (templateName: string): boolean => {
   return fs.existsSync(templatePath);
 };
 
+<<<<<<< HEAD
 // 🔒 POST: Obtener lista de templates disponibles (CON autenticación)
 router.post('/templates', validateToken, async (req, res) => {
   const requestId = (req as any).requestId || 'no-id';
@@ -225,6 +229,9 @@ function getSampleData(templateName: string): any {
 }
 
 // 🔒 ENDPOINT: Generar PDF (CON autenticación)
+=======
+// Ruta para generar el PDF (CON autenticación - ÚNICO ENDPOINT)
+>>>>>>> origin/main
 router.post('/pdf/view', validateToken, async (req, res) => {
   const templateName = req.query.template as string;
   const data = req.body;
@@ -254,7 +261,11 @@ router.post('/pdf/view', validateToken, async (req, res) => {
 
   try {
     // Log del inicio del proceso de generación de PDF
+<<<<<<< HEAD
     logger.info(`[Request ID: ${requestId}] Iniciando generación de PDF con template: ${templateName} (autenticado) | Referer: ${referer} | IP: ${ip}`);
+=======
+    logger.info(`[Request ID: ${requestId}] Iniciando generación de PDF con template: ${templateName} | Referer: ${referer} | IP: ${ip}`);
+>>>>>>> origin/main
 
     // ✅ MEJORADO: Pasar info del request al generador
     const requestInfo = {

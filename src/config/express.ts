@@ -1,9 +1,13 @@
 import express, { Request, Response, NextFunction } from 'express';
+<<<<<<< HEAD
 import cors from 'cors'; // ✅ IMPORTAR CORS
+=======
+>>>>>>> origin/main
 import logger from '../services/logger';
 import pdfRoutes from '../routes/pdfRoutes';
 import healthRoutes from '../routes/healthRoutes';
 import { v4 as uuidv4 } from 'uuid';
+<<<<<<< HEAD
 import path from 'path';
 
 const app = express();
@@ -53,6 +57,13 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // ✅ Servidor estático para assets
+=======
+import path from 'path'; // ✅ AGREGAR import
+
+const app = express();
+
+// ✅ AGREGAR: Servidor estático para assets (ANTES de otros middlewares)
+>>>>>>> origin/main
 app.use('/assets', express.static(path.join(__dirname, '../../assets')));
 
 // Middleware para generar requestId y agregarlo al objeto request

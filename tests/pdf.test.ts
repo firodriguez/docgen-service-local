@@ -14,12 +14,15 @@ describe('PDF Service Tests', () => {
         }
     };
 
+<<<<<<< HEAD
     const validAuthBody = {
         config: {
             token: validToken
         }
     };
 
+=======
+>>>>>>> origin/main
     describe('Authentication & Security', () => {
         it('should return 400 when template is missing', async () => {
             const response = await request(app)
@@ -87,6 +90,7 @@ describe('PDF Service Tests', () => {
         });
     });
 
+<<<<<<< HEAD
     // 🆕 NUEVOS TESTS: Templates GET Endpoints
     describe('Templates GET Endpoints (Protected)', () => {
         it('should require authentication for GET /api/templates', async () => {
@@ -174,6 +178,8 @@ describe('PDF Service Tests', () => {
         });
     });
 
+=======
+>>>>>>> origin/main
     describe('PDF Generation (Solo en Docker)', () => {
         it('should handle chromium not found gracefully in local development', async () => {
             const response = await request(app)
@@ -223,7 +229,11 @@ describe('PDF Service Tests', () => {
 
             expect(response.status).toBe(200);
             expect(response.body.status).toBe('healthy');
+<<<<<<< HEAD
             expect(response.body.service).toBe('docgen-service'); // ✅ Corregido nombre del servicio
+=======
+            expect(response.body.service).toBe('pdf-backend');
+>>>>>>> origin/main
         });
 
         it('should return detailed health info', async () => {
@@ -243,6 +253,7 @@ describe('PDF Service Tests', () => {
             expect(response.body.status).toBeDefined();
         });
     });
+<<<<<<< HEAD
 
     // 🆕 TESTS DE INTEGRACIÓN: Flujo completo
     describe('Integration Tests', () => {
@@ -291,4 +302,6 @@ describe('PDF Service Tests', () => {
             }
         });
     });
+=======
+>>>>>>> origin/main
 });
