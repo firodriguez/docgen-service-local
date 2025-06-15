@@ -20,10 +20,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-<<<<<<< HEAD
     "cors": "^2.8.5",
-=======
->>>>>>> origin/main
     "dotenv": "^16.5.0",
     "express": "^4.18.2",
     "handlebars": "4.7.7",
@@ -32,10 +29,7 @@
     "winston": "^3.17.0"
   },
   "devDependencies": {
-<<<<<<< HEAD
     "@types/cors": "^2.8.19",
-=======
->>>>>>> origin/main
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
@@ -53,8 +47,4 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/main
