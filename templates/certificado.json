@@ -1,6 +1,6 @@
 {
-    "heards":
-    {"exportNumber": "EXP-2024-001",
+    "header":{
+    "exportNumber": "EXP-2024-001",
     "productDescription": "Frozen Fruit Pulp Doypack",
     "client": "Global Foods Inc.",
     "materialNumber": "123213",
@@ -12,9 +12,8 @@
     "manufacturingSiteLocation": "Chile",
     "orderNumber": "OC3434",
     "invoiceNumber": "INV21323",
-    "internalContainer": "SDK3ED"},
-    
-    
+    "internalContainer": "SDK3ED"
+    },
     "lots": [
         {
             "lotNumber": "A001",
