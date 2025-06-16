@@ -329,8 +329,8 @@
             <div class="info-cell info-separator"></div>
             <div class="info-cell info-value"></div>
         </div>
-
-        <!-- PHYSICAL & CHEMICAL PROFILE -->
+        
+        <!-- PHYSICAL & CHEMICAL PROFILE - Mejorado -->
         <div class="analysis-section">
             <div class="analysis-title">Physical & Chemical Profile</div>
         
@@ -358,13 +358,13 @@
                 </tr>
         
                 <tr>
-                    <td class="fixed-header" colspan="2">Quantity (unidad de medida)</td>
+                    <td class="fixed-header" colspan="2">Quantity</td>
                     {{#each lots}}
                     <td class="data-cell">{{quantity}}</td>
                     {{/each}}
                 </tr>
         
-                <!-- Dynamic Attribute Rows -->
+                <!-- Dynamic Attribute Rows - MEJORADO: Reemplazado {{this}} por {{.}} -->
                 {{#each physicalChemicalAttributes}}
                 <tr>
                     <td class="attribute-header">
@@ -372,7 +372,7 @@
                     </td>
                     <td class="range-cell">{{range}}</td>
                     {{#each results}}
-                    <td class="explanation-cell">{{this}}</td>
+                    <td class="explanation-cell">{{.}}</td>
                     {{/each}}
                 </tr>
                 {{/each}}
@@ -398,7 +398,7 @@
             {{/if}}
         </div>
 
-        <!-- MICROBIOLOGICAL AND CONTAMINANTS PROFILE - VERSIÓN SIMPLIFICADA -->
+        <!-- MICROBIOLOGICAL AND CONTAMINANTS PROFILE - MEJORADO -->
         <div class="analysis-section">
             <div class="analysis-title">Microbiological and Contaminants Profile</div>
         
@@ -441,7 +441,7 @@
                     </td>
                     <td class="range-cell">{{range}}</td>
                     {{#each results}}
-                    <td class="data-cell">{{this}}</td>
+                    <td class="data-cell">{{.}}</td>
                     {{/each}}
                 </tr>
                 {{/each}}
@@ -463,7 +463,7 @@
                     </td>
                     <td class="range-cell">{{range}}</td>
                     {{#each results}}
-                    <td class="data-cell">{{this}}</td>
+                    <td class="data-cell">{{.}}</td>
                     {{/each}}
                 </tr>
                 {{/each}}
