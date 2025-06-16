@@ -1,5 +1,6 @@
 {
-    "exportNumber": "EXP-2024-001",
+    "heards":
+    {"exportNumber": "EXP-2024-001",
     "productDescription": "Frozen Fruit Pulp Doypack",
     "client": "Global Foods Inc.",
     "materialNumber": "123213",
@@ -11,7 +12,8 @@
     "manufacturingSiteLocation": "Chile",
     "orderNumber": "OC3434",
     "invoiceNumber": "INV21323",
-    "internalContainer": "SDK3ED",
+    "internalContainer": "SDK3ED"},
+    
     
     "lots": [
         {
@@ -32,22 +34,22 @@
         {
             "testName": "Moisture",
             "acceptableRange": "10-15%",
-            "values": ["12.1", "12.3"]
+            "testValues": ["12.1", "12.3"]
         },
         {
             "testName": "Protein", 
             "acceptableRange": "8-12%",
-            "values": ["9.5", "9.8"]
+            "testValues": ["9.5", "9.8"]
         },
         {
             "testName": "Fat",
             "acceptableRange": "2-5%", 
-            "values": ["3.1", "3.2"]
+            "testValues": ["3.1", "3.2"]
         },
         {
             "testName": "Ash",
             "acceptableRange": "1-3%",
-            "values": ["1.8", "1.9"]
+            "testValues": ["1.8", "1.9"]
         }
     ],
     
@@ -68,12 +70,12 @@
         {
             "testName": "Total Plate Count",
             "acceptableRange": "<1000 CFU/g",
-            "values": ["<10", "<10"]
+            "microbiologyValues": ["<10", "<10"]
         },
         {
             "testName": "E. coli", 
             "acceptableRange": "<10 CFU/g",
-            "values": ["<1", "<1"]
+            "microbiologyValues": ["<1", "<1"]
         }
     ],
     
@@ -81,12 +83,12 @@
         {
             "testName": "Pesticide Residues",
             "acceptableRange": "Below Detection Limit",
-            "values": ["<LOD", "<LOD"]
+            "contaminantValues": ["<LOD", "<LOD"]
         },
         {
             "testName": "Heavy Metals (Pb)",
             "acceptableRange": "<0.1 mg/kg",
-            "values": ["<0.01", "<0.01"]
+            "contaminantValues": ["<0.01", "<0.01"]
         }
     ],
     "facility": {
