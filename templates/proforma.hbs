@@ -41,17 +41,17 @@ td, th {
   <h1>Proforma Invoice - CLIENTE</h1>
 
   <table class="no-border">
-    <tr><td>Date:</td><td>{{fecha}}</td></tr>
-    <tr><td>Customer:</td><td>{{cliente}}</td></tr>
-    <tr><td>Invoice Nº:</td><td>{{invoice}}</td></tr>
-    <tr><td>XP Nº:</td><td>{{xp}}</td></tr>
-    <tr><td>PO Nº:</td><td>{{po}}</td></tr>
-    <tr><td>Vessel:</td><td>{{vessel}}</td></tr>
-    <tr><td>Shipping Date:</td><td>{{shipping_date}}</td></tr>
-    <tr><td>Port of Loading:</td><td>{{port}}</td></tr>
-    <tr><td>Final Destination:</td><td>{{destino}}</td></tr>
-    <tr><td>Container Nº:</td><td>{{container}}</td></tr>
-    <tr><td>Signature:</td><td>{{firma}}</td></tr>
+    <tr><td>Date:</td><td>{{header.fecha}}</td></tr>
+    <tr><td>Customer:</td><td>{{header.cliente}}</td></tr>
+    <tr><td>Invoice Nº:</td><td>{{header.invoice}}</td></tr>
+    <tr><td>XP Nº:</td><td>{{header.xp}}</td></tr>
+    <tr><td>PO Nº:</td><td>{{header.po}}</td></tr>
+    <tr><td>Vessel:</td><td>{{header.vessel}}</td></tr>
+    <tr><td>Shipping Date:</td><td>{{header.shipping_date}}</td></tr>
+    <tr><td>Port of Loading:</td><td>{{header.port}}</td></tr>
+    <tr><td>Final Destination:</td><td>{{header.destino}}</td></tr>
+    <tr><td>Container Nº:</td><td>{{header.container}}</td></tr>
+    <tr><td>Signature:</td><td>{{header.firma}}</td></tr>
   </table>
 
   <h3>Product Details</h3>

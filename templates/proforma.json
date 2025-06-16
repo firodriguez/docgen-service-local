@@ -1,4 +1,5 @@
-{
+{   
+    "header":{
     "fecha": "2025-06-11",
     "cliente": "IMPORTADORA GLOBAL S.A.",
     "invoice": "INV-2025-001234",
@@ -9,7 +10,8 @@
     "port": "Puerto de Valparaíso, Chile",
     "destino": "Puerto de Los Angeles, USA",
     "container": "TCLU-1234567-8",
-    "firma": "Juan Carlos Pérez - Export Manager",
+    "firma": "Juan Carlos Pérez - Export Manager"
+    },
     "productos": [
         {
             "cantidad": "1,500.00",
