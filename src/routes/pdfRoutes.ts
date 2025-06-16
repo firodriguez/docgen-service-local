@@ -70,7 +70,7 @@ router.post('/templates', validateToken, async (req, res) => {
   }
 });
 
-// 🔒 POST: Obtener template específico (HTML crudo) (CON autenticación)
+// 🔒 POST: Obtener template específico CON ANÁLISIS DE JSON
 router.post('/templates/:templateName', validateToken, async (req, res) => {
   const templateName = req.params.templateName;
   const requestId = (req as any).requestId || 'no-id';
@@ -92,42 +92,51 @@ router.post('/templates/:templateName', validateToken, async (req, res) => {
     const templateContent = fs.readFileSync(templatePath, 'utf-8');
     const stats = fs.statSync(templatePath);
 
-    // Extraer variables del template (buscar {{variable}} y {{#loops}})
-    const variableMatches = templateContent.match(/\{\{([^}]+)\}\}/g) || [];
-    const allVariables = variableMatches.map(match => match.replace(/[{}]/g, '').trim());
-
-    // Filtrar variables (eliminar helpers de Handlebars y duplicados)
-    const variables = [...new Set(allVariables.filter(variable => {
-      // Excluir helpers de Handlebars como #each, #if, /each, etc.
-      return !variable.startsWith('#') &&
-        !variable.startsWith('/') &&
-        !variable.includes('this') &&
-        variable !== 'else';
-    }))];
-
-    // Detectar loops especiales (como productos)
-    const loopMatches = templateContent.match(/\{\{#([^}]+)\}\}/g) || [];
-    const loops = loopMatches.map(match => match.replace(/[{}#]/g, '').trim());
-
-    // Verificar si existe archivo JSON de ejemplo
+    // 🚀 CARGAR JSON DE EJEMPLO PARA ANÁLISIS
     const jsonPath = path.join(__dirname, '../../templates', `${templateName}.json`);
     const hasExample = fs.existsSync(jsonPath);
 
+    let sampleData = null;
+    let analyzedStructure = null;
+
+    if (hasExample) {
+      try {
+        sampleData = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
+
+        // 🎯 ANALIZAR ESTRUCTURA DEL JSON - MUY SIMPLE
+        analyzedStructure = analyzeJSONStructure(sampleData);
+
+        logger.info(`[Request ID: ${requestId}] JSON de ejemplo analizado para ${templateName}`);
+      } catch (error: any) {
+        logger.warn(`[Request ID: ${requestId}] Error leyendo JSON de ejemplo: ${error.message}`);
+      }
+    }
+
+    // 📤 RESPUESTA SIMPLE Y CLARA
     res.status(200).json({
       success: true,
       template: {
         name: templateName,
         content: templateContent,
-        variables: variables,
-        loops: loops, // Agregar info de loops
+
+        // 🎯 ESTRUCTURA BASADA EN JSON REAL
+        ...(analyzedStructure || {
+          normalVariables: [],
+          conditionalVariables: [],
+          arrayInfo: [],
+          loops: []
+        }),
+
+        // Metadatos básicos
         size: stats.size,
         modified: stats.mtime.toISOString(),
-        hasExample: hasExample
+        hasExample: hasExample,
+        sampleData: sampleData
       },
       requestId: requestId
     });
 
-    logger.info(`[Request ID: ${requestId}] Template enviado: ${templateName} (${templateContent.length} chars, ${variables.length} variables) (autenticado) | IP: ${ip}`);
+    logger.info(`[Request ID: ${requestId}] Template enviado: ${templateName} (${templateContent.length} chars) | IP: ${ip}`);
 
   } catch (error: any) {
     logger.error(`[Request ID: ${requestId}] Error obteniendo template ${templateName}: ${error.message} | IP: ${ip}`);
@@ -189,6 +198,103 @@ router.post('/templates/:templateName/preview', validateToken, async (req, res) 
     res.status(500).send(errorHtml);
   }
 });
+
+// 🎯 FUNCIÓN SIMPLE PARA ANALIZAR JSON
+function analyzeJSONStructure(data: any) {
+  const result = {
+    normalVariables: [] as string[],
+    conditionalVariables: [] as string[],
+    arrayInfo: [] as any[],
+    loops: [] as string[],
+    allVariables: [] as string[]
+  };
+
+  if (!data || typeof data !== 'object') {
+    return result;
+  }
+
+  // 🔍 ANALIZAR CADA PROPIEDAD DEL JSON
+  Object.keys(data).forEach(key => {
+    const value = data[key];
+
+    if (Array.isArray(value)) {
+      // 📋 ES UN ARRAY
+      analyzeArray(key, value, result);
+    } else if (typeof value === 'boolean') {
+      // 🔘 ES UN BOOLEAN (probablemente condicional)
+      if (key.startsWith('show') || key.startsWith('enable') || key.startsWith('display')) {
+        result.conditionalVariables.push(key);
+      } else {
+        result.normalVariables.push(key);
+      }
+    } else if (typeof value === 'string' || typeof value === 'number') {
+      // 📝 ES UNA VARIABLE SIMPLE
+      result.normalVariables.push(key);
+    }
+  });
+
+  // 🧹 LIMPIAR Y ORGANIZAR
+  result.normalVariables.sort();
+  result.conditionalVariables.sort();
+  result.allVariables = [
+    ...result.normalVariables,
+    ...result.conditionalVariables,
+    ...result.arrayInfo.flatMap(arr => arr.variables)
+  ];
+
+  logger.debug(`Estructura analizada: ${result.normalVariables.length} variables, ${result.conditionalVariables.length} condicionales, ${result.arrayInfo.length} arrays`);
+
+  return result;
+}
+
+// 🔍 ANALIZAR ARRAYS Y SUS CONTENIDOS
+function analyzeArray(arrayName: string, arrayData: any[], result: any) {
+  if (arrayData.length === 0) {
+    // Array vacío
+    result.arrayInfo.push({
+      name: arrayName,
+      variables: [],
+      nestedArrays: []
+    });
+    result.loops.push(`each ${arrayName}`);
+    return;
+  }
+
+  // 📊 ANALIZAR EL PRIMER ELEMENTO PARA VER LA ESTRUCTURA
+  const firstItem = arrayData[0];
+  const variables: string[] = [];
+  const nestedArrays: any[] = [];
+
+  if (typeof firstItem === 'object' && firstItem !== null) {
+    Object.keys(firstItem).forEach(key => {
+      const value = firstItem[key];
+
+      if (Array.isArray(value)) {
+        // 🔗 ARRAY ANIDADO DETECTADO
+        nestedArrays.push({
+          name: key,
+          parentArray: arrayName,
+          variables: typeof value[0] === 'string' ? ['.'] : Object.keys(value[0] || {})
+        });
+
+        logger.debug(`Array anidado detectado: ${key} dentro de ${arrayName}`);
+      } else {
+        // 📝 VARIABLE DEL ARRAY
+        variables.push(key);
+      }
+    });
+  }
+
+  result.arrayInfo.push({
+    name: arrayName,
+    variables: variables,
+    nestedArrays: nestedArrays
+  });
+
+  result.loops.push(`each ${arrayName}`);
+
+  logger.debug(`Array ${arrayName}: ${variables.length} variables, ${nestedArrays.length} arrays anidados`);
+}
 
 // Función para generar datos de ejemplo desde archivo JSON
 function getSampleData(templateName: string): any {
