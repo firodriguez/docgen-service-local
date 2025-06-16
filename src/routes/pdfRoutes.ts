@@ -77,23 +77,35 @@ router.post('/templates/:templateName', validateToken, async (req, res) => {
   const ip = req.ip || req.connection.remoteAddress || '-';
 
   try {
-    logger.info(`[Request ID: ${requestId}] Solicitando template: ${templateName} (autenticado) | IP: ${ip}`);
+    logger.info(
+      `[Request ID: ${requestId}] Solicitando template: ${templateName} (autenticado) | IP: ${ip}`
+    );
 
     if (!templateExists(templateName)) {
-      logger.warn(`[Request ID: ${requestId}] Template no encontrado: ${templateName} | IP: ${ip}`);
+      logger.warn(
+        `[Request ID: ${requestId}] Template no encontrado: ${templateName} | IP: ${ip}`
+      );
       return res.status(404).json({
         error: true,
         message: `Template '${templateName}' no encontrado`,
-        requestId: requestId
+        requestId: requestId,
       });
     }
 
-    const templatePath = path.join(__dirname, '../../templates', `${templateName}.hbs`);
-    const templateContent = fs.readFileSync(templatePath, 'utf-8');
+    const templatePath = path.join(
+      __dirname,
+      "../../templates",
+      `${templateName}.hbs`
+    );
+    const templateContent = fs.readFileSync(templatePath, "utf-8");
     const stats = fs.statSync(templatePath);
 
-    // 🚀 CARGAR JSON DE EJEMPLO PARA ANÁLISIS
-    const jsonPath = path.join(__dirname, '../../templates', `${templateName}.json`);
+    // 🚀 CARGAR JSON DE EJEMPLO PARA ANÁLISIS MEJORADO
+    const jsonPath = path.join(
+      __dirname,
+      "../../templates",
+      `${templateName}.json`
+    );
     const hasExample = fs.existsSync(jsonPath);
 
     let sampleData = null;
@@ -101,43 +113,63 @@ router.post('/templates/:templateName', validateToken, async (req, res) => {
 
     if (hasExample) {
       try {
-        sampleData = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
+        sampleData = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
 
-        // 🎯 ANALIZAR ESTRUCTURA DEL JSON - MUY SIMPLE
+        // 🎯 ANALIZAR ESTRUCTURA DEL JSON CON FUNCIONES MEJORADAS
         analyzedStructure = analyzeJSONStructure(sampleData);
 
-        logger.info(`[Request ID: ${requestId}] JSON de ejemplo analizado para ${templateName}`);
+        logger.info(
+          `[Request ID: ${requestId}] JSON de ejemplo analizado completamente para ${templateName}`
+        );
       } catch (error: any) {
-        logger.warn(`[Request ID: ${requestId}] Error leyendo JSON de ejemplo: ${error.message}`);
+        logger.warn(
+          `[Request ID: ${requestId}] Error leyendo JSON de ejemplo: ${error.message}`
+        );
       }
+    } else {
+      // 🔧 GENERAR DATOS DE EJEMPLO MEJORADOS
+      sampleData = getSampleDataEnhanced(templateName);
+      analyzedStructure = analyzeJSONStructure(sampleData);
     }
 
-    // 📤 RESPUESTA SIMPLE Y CLARA
+    // 📤 RESPUESTA MEJORADA Y COMPLETA
     res.status(200).json({
       success: true,
       template: {
         name: templateName,
         content: templateContent,
 
-        // 🎯 ESTRUCTURA BASADA EN JSON REAL
+        // 🎯 ESTRUCTURA COMPLETA BASADA EN ANÁLISIS MEJORADO
         ...(analyzedStructure || {
           normalVariables: [],
           conditionalVariables: [],
           arrayInfo: [],
-          loops: []
+          loops: [],
         }),
 
         // Metadatos básicos
         size: stats.size,
         modified: stats.mtime.toISOString(),
         hasExample: hasExample,
-        sampleData: sampleData
+        sampleData: sampleData,
+
+        // 🔧 NUEVA INFO: Metadatos de análisis
+        analysisMetadata: {
+          hasNestedObjects: analyzedStructure
+            ? analyzedStructure.normalVariables.some((v) => v.includes("."))
+            : false,
+          hasArraysWithThis: analyzedStructure
+            ? analyzedStructure.arrayInfo.some((a) => a.hasThisContext)
+            : false,
+          complexityLevel: getComplexityLevel(analyzedStructure),
+        },
       },
-      requestId: requestId
+      requestId: requestId,
     });
 
-    logger.info(`[Request ID: ${requestId}] Template enviado: ${templateName} (${templateContent.length} chars) | IP: ${ip}`);
-
+    logger.info(
+      `[Request ID: ${requestId}] Template enviado: ${templateName} (${templateContent.length} chars) | IP: ${ip}`
+    );
   } catch (error: any) {
     logger.error(`[Request ID: ${requestId}] Error obteniendo template ${templateName}: ${error.message} | IP: ${ip}`);
 
@@ -148,6 +180,24 @@ router.post('/templates/:templateName', validateToken, async (req, res) => {
     });
   }
 });
+
+// 🔧 FUNCIÓN HELPER: Calcular nivel de complejidad
+function getComplexityLevel(analysis: any): string {
+  if (!analysis) return 'unknown';
+  
+  const totalVariables = analysis.normalVariables.length + analysis.conditionalVariables.length;
+  const totalArrays = analysis.arrayInfo.length;
+  const hasNestedArrays = analysis.arrayInfo.some((a: any) => a.nestedArrays.length > 0);
+  const hasThisContext = analysis.arrayInfo.some((a: any) => a.hasThisContext);
+
+  if (totalVariables > 20 || totalArrays > 5 || hasNestedArrays || hasThisContext) {
+    return 'complex';
+  } else if (totalVariables > 10 || totalArrays > 2) {
+    return 'medium';
+  } else {
+    return 'simple';
+  }
+}
 
 // 🔒 POST: Preview HTML del template con datos de ejemplo (CON autenticación)
 router.post('/templates/:templateName/preview', validateToken, async (req, res) => {
@@ -199,7 +249,7 @@ router.post('/templates/:templateName/preview', validateToken, async (req, res) 
   }
 });
 
-// 🎯 FUNCIÓN SIMPLE PARA ANALIZAR JSON
+/// 🎯 FUNCIÓN MEJORADA PARA ANALIZAR JSON - DETECTA TODO
 function analyzeJSONStructure(data: any) {
   const result = {
     normalVariables: [] as string[],
@@ -213,7 +263,9 @@ function analyzeJSONStructure(data: any) {
     return result;
   }
 
-  // 🔍 ANALIZAR CADA PROPIEDAD DEL JSON
+  console.log('🔍 Analizando estructura JSON completa...');
+
+  // 🔧 PASO 1: Analizar propiedades del nivel raíz
   Object.keys(data).forEach(key => {
     const value = data[key];
 
@@ -227,6 +279,9 @@ function analyzeJSONStructure(data: any) {
       } else {
         result.normalVariables.push(key);
       }
+    } else if (typeof value === 'object' && value !== null) {
+      // 🏗️ ES UN OBJETO - ANALIZAR PROPIEDADES ANIDADAS
+      analyzeNestedObject(key, value, result);
     } else if (typeof value === 'string' || typeof value === 'number') {
       // 📝 ES UNA VARIABLE SIMPLE
       result.normalVariables.push(key);
@@ -234,27 +289,49 @@ function analyzeJSONStructure(data: any) {
   });
 
   // 🧹 LIMPIAR Y ORGANIZAR
-  result.normalVariables.sort();
-  result.conditionalVariables.sort();
+  result.normalVariables = [...new Set(result.normalVariables)].sort();
+  result.conditionalVariables = [...new Set(result.conditionalVariables)].sort();
   result.allVariables = [
     ...result.normalVariables,
     ...result.conditionalVariables,
     ...result.arrayInfo.flatMap(arr => arr.variables)
   ];
 
-  logger.debug(`Estructura analizada: ${result.normalVariables.length} variables, ${result.conditionalVariables.length} condicionales, ${result.arrayInfo.length} arrays`);
+  console.log(`✅ Estructura analizada completa: ${result.normalVariables.length} variables, ${result.conditionalVariables.length} condicionales, ${result.arrayInfo.length} arrays`);
+  console.log('📝 Variables normales:', result.normalVariables);
+  console.log('🔘 Variables condicionales:', result.conditionalVariables);
+  console.log('📋 Arrays:', result.arrayInfo.map(a => a.name));
 
   return result;
 }
 
-// 🔍 ANALIZAR ARRAYS Y SUS CONTENIDOS
+// 🔧 NUEVA FUNCIÓN: Analizar objetos anidados
+function analyzeNestedObject(objectName: string, objectData: any, result: any) {
+  console.log(`🏗️ Analizando objeto anidado: ${objectName}`, Object.keys(objectData));
+
+  // Agregar cada propiedad del objeto como variable editable
+  Object.keys(objectData).forEach(propertyName => {
+    const fullVariableName = `${objectName}.${propertyName}`;
+    result.normalVariables.push(fullVariableName);
+    
+    console.log(`  ✅ Variable anidada detectada: ${fullVariableName}`);
+  });
+
+  // IMPORTANTE: También agregar el objeto completo para referencia
+  result.normalVariables.push(objectName);
+}
+
+// 🔍 FUNCIÓN MEJORADA: Analizar arrays y detectar arrays anidados con {{this}}
 function analyzeArray(arrayName: string, arrayData: any[], result: any) {
+  console.log(`📋 Analizando array: ${arrayName} con ${arrayData.length} elementos`);
+
   if (arrayData.length === 0) {
     // Array vacío
     result.arrayInfo.push({
       name: arrayName,
       variables: [],
-      nestedArrays: []
+      nestedArrays: [],
+      hasThisContext: false
     });
     result.loops.push(`each ${arrayName}`);
     return;
@@ -264,20 +341,30 @@ function analyzeArray(arrayName: string, arrayData: any[], result: any) {
   const firstItem = arrayData[0];
   const variables: string[] = [];
   const nestedArrays: any[] = [];
+  let hasThisContext = false;
 
-  if (typeof firstItem === 'object' && firstItem !== null) {
+  if (typeof firstItem === 'string' || typeof firstItem === 'number') {
+    // 🎯 ARRAY DE STRINGS/NÚMEROS - REQUIERE {{this}}
+    hasThisContext = true;
+    variables.push('this'); // Agregar {{this}} como variable especial
+    console.log(`  🎯 Array de primitivos detectado: ${arrayName} requiere {{this}}`);
+  } else if (typeof firstItem === 'object' && firstItem !== null) {
+    // 📊 ARRAY DE OBJETOS
     Object.keys(firstItem).forEach(key => {
       const value = firstItem[key];
 
       if (Array.isArray(value)) {
         // 🔗 ARRAY ANIDADO DETECTADO
+        const isStringArray = value.length > 0 && typeof value[0] === 'string';
+        
         nestedArrays.push({
           name: key,
           parentArray: arrayName,
-          variables: typeof value[0] === 'string' ? ['.'] : Object.keys(value[0] || {})
+          variables: isStringArray ? ['this'] : Object.keys(value[0] || {}),
+          hasThisContext: isStringArray
         });
 
-        logger.debug(`Array anidado detectado: ${key} dentro de ${arrayName}`);
+        console.log(`  🔗 Array anidado detectado: ${key} dentro de ${arrayName}, hasThis: ${isStringArray}`);
       } else {
         // 📝 VARIABLE DEL ARRAY
         variables.push(key);
@@ -288,12 +375,103 @@ function analyzeArray(arrayName: string, arrayData: any[], result: any) {
   result.arrayInfo.push({
     name: arrayName,
     variables: variables,
-    nestedArrays: nestedArrays
+    nestedArrays: nestedArrays,
+    hasThisContext: hasThisContext
   });
 
   result.loops.push(`each ${arrayName}`);
 
-  logger.debug(`Array ${arrayName}: ${variables.length} variables, ${nestedArrays.length} arrays anidados`);
+  console.log(`  ✅ Array ${arrayName}: ${variables.length} variables, ${nestedArrays.length} arrays anidados, hasThis: ${hasThisContext}`);
+}
+
+// 🔧 FUNCIÓN HELPER: Generar datos de ejemplo mejorados
+function getSampleDataEnhanced(templateName: string): any {
+  try {
+    // Buscar archivo JSON con el mismo nombre que el template
+    const samplePath = path.join(__dirname, '../../templates', `${templateName}.json`);
+
+    if (fs.existsSync(samplePath)) {
+      const sampleData = JSON.parse(fs.readFileSync(samplePath, 'utf-8'));
+      console.log(`📊 Datos de ejemplo cargados desde: ${templateName}.json`);
+      
+      // 🔧 MEJORAR: Validar que los datos contengan arrays con {{this}}
+      validateAndEnhanceSampleData(sampleData);
+      
+      return sampleData;
+    } else {
+      console.warn(`⚠️ No se encontró archivo de ejemplo: ${templateName}.json, usando datos básicos`);
+
+      // Fallback a datos básicos mejorados
+      return {
+        fecha: new Date().toISOString().split('T')[0],
+        cliente: `CLIENTE EJEMPLO - ${templateName.toUpperCase()}`,
+        descripcion: `Datos de ejemplo para template ${templateName}`,
+        
+        // 🎯 AGREGAR EJEMPLOS DE OBJETOS ANIDADOS
+        facility: {
+          name: "Empresa Ejemplo S.A.",
+          address: "Dirección de Ejemplo 123",
+          city: "Ciudad Ejemplo",
+          region: "Región Ejemplo",
+          country: "País Ejemplo",
+          rut: "12.345.678-9"
+        },
+
+        // 🎯 AGREGAR EJEMPLOS DE ARRAYS CON {{this}}
+        testResults: [
+          {
+            testName: "Prueba 1",
+            acceptableRange: "0-100",
+            values: ["85", "90", "88"] // Array que requiere {{this}}
+          },
+          {
+            testName: "Prueba 2", 
+            acceptableRange: "1-10",
+            values: ["5", "7", "6"] // Array que requiere {{this}}
+          }
+        ],
+
+        firma: "Responsable del Área",
+        nota: `Datos de ejemplo generados para ${templateName}`
+      };
+    }
+  } catch (error: any) {
+    console.error(`❌ Error leyendo datos de ejemplo para ${templateName}: ${error.message}`);
+
+    // Fallback en caso de error
+    return {
+      fecha: new Date().toISOString().split('T')[0],
+      cliente: "CLIENTE DE PRUEBA",
+      error: `No se pudieron cargar los datos de ejemplo: ${error.message}`
+    };
+  }
+}
+
+// 🔧 NUEVA FUNCIÓN: Validar y mejorar datos de ejemplo
+function validateAndEnhanceSampleData(data: any) {
+  console.log('🔧 Validando estructura de datos de ejemplo...');
+
+  // Buscar arrays que podrían necesitar {{this}}
+  Object.keys(data).forEach(key => {
+    const value = data[key];
+    
+    if (Array.isArray(value)) {
+      value.forEach((item, index) => {
+        if (typeof item === 'object' && item !== null) {
+          Object.keys(item).forEach(itemKey => {
+            const itemValue = item[itemKey];
+            
+            if (Array.isArray(itemValue)) {
+              const isStringArray = itemValue.every(v => typeof v === 'string');
+              if (isStringArray) {
+                console.log(`  ✅ Array de strings detectado: ${key}[${index}].${itemKey} - requerirá {{this}}`);
+              }
+            }
+          });
+        }
+      });
+    }
+  });
 }
 
 // Función para generar datos de ejemplo desde archivo JSON

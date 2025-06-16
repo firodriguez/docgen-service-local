@@ -34,17 +34,18 @@
             text-align: center;
             margin: 10px 0;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: flex-end; /* Alinea la imagen al lado derecho */
+            align-items: center;       /* Centra la imagen verticalmente */
         }
 
         .logo {
             height: 40px;
             width: auto;
         }
-
         .logo-placeholder {
-            font-size: 8pt;
+            height: 50px;  /* Ajusta el tamaño de la imagen */
+            width: auto;   /* Mantiene la proporción de la imagen */
+            font-size: 8pt; 
             font-style: italic;
             color: #666;
         }
@@ -233,6 +234,7 @@
 
         <div class="company-logos">
             <div style="display: flex; gap: 20px;">
+                <!-- Aquí puedes agregar otros elementos si lo necesitas -->
             </div>
             <img src="/assets/logos/surfrut.png" alt="Logo" class="logo-placeholder">
         </div>

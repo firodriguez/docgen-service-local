@@ -89,7 +89,6 @@
             "values": ["<0.01", "<0.01"]
         }
     ],
-    
     "facility": {
         "name": "Surfrut S.A.",
         "address": "Camino La Palma s/n",
@@ -100,14 +99,10 @@
         "fdaRegistration": "12345-67890",
         "fdaFce": "FCE-12345"
     },
-    
-    "signature": {
-        "name": "Juan Carlos Silva",
-        "title": "Quality Manager", 
-        "company": "Surfrut S.A.",
-        "date": "16/06/2025"
-    },
-    
+    "signaturename": "Juan Carlos Silva",
+    "signaturetitle": "Quality Manager", 
+    "signaturecompany": "Surfrut S.A.",
+    "signaturedate": "16/06/2025",
     "showDoypackNote": true,
     "showBulkNote": true,
     "showSurfruitNote": true,

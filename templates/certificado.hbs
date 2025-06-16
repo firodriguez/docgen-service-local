@@ -34,17 +34,18 @@
             text-align: center;
             margin: 10px 0;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: flex-end; /* Alinea la imagen al lado derecho */
+            align-items: center;       /* Centra la imagen verticalmente */
         }
 
         .logo {
             height: 40px;
             width: auto;
         }
-
         .logo-placeholder {
-            font-size: 8pt;
+            height: 50px;  /* Ajusta el tamaño de la imagen */
+            width: auto;   /* Mantiene la proporción de la imagen */
+            font-size: 8pt; 
             font-style: italic;
             color: #666;
         }
@@ -233,6 +234,7 @@
 
         <div class="company-logos">
             <div style="display: flex; gap: 20px;">
+                <!-- Aquí puedes agregar otros elementos si lo necesitas -->
             </div>
             <img src="/assets/logos/surfrut.png" alt="Logo" class="logo-placeholder">
         </div>
@@ -347,7 +349,7 @@
                     <td class="range-cell">{{acceptableRange}}</td>
                     <!-- 🚀 CAMBIO 2: values en lugar de results -->
                     {{#each values}}
-                    <td class="explanation-cell">{{values.0}}</td>
+                    <td class="explanation-cell">{{this}}</td>
                     {{/each}}
                 </tr>
                 {{/each}}
@@ -421,7 +423,7 @@
                     <td class="range-cell">{{acceptableRange}}</td>
                     <!-- 🚀 CAMBIO 5: values en lugar de results -->
                     {{#each values}}
-                    <td class="data-cell">{{values.0}}</td>
+                    <td class="data-cell">{{this}}</td>
                     {{/each}}
                 </tr>
                 {{/each}}
@@ -443,7 +445,7 @@
                     <td class="range-cell">{{acceptableRange}}</td>
                     <!-- 🚀 CAMBIO 7: values en lugar de results -->
                     {{#each values}}
-                    <td class="data-cell">{{values.0}}</td>
+                    <td class="data-cell">{{this}}</td>
                     {{/each}}
                 </tr>
                 {{/each}}
@@ -485,16 +487,16 @@
                     <td></td> <!-- Space for signature -->
                 </tr>
                 <tr>
-                    <td><strong>{{signature.name}}</strong></td>
+                    <td><strong>{{signaturename}}</strong></td>
                 </tr>
                 <tr>
-                    <td>{{signature.title}}</td>
+                    <td>{{signaturetitle}}</td>
                 </tr>
                 <tr>
-                    <td><strong>{{signature.company}}</strong></td>
+                    <td><strong>{{signaturecompany}}</strong></td>
                 </tr>
                 <tr>
-                    <td>{{signature.date}}</td>
+                    <td>{{signaturedate}}</td>
                 </tr>
             </table>
         </div>
