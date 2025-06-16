@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 8pt;
+            color: black;
+            margin: 0;
+            padding: 15px;
+            line-height: 1.1;
+        }
+
+        .certificate-container {
+            width: 100%;
+            max-width: 210mm;
+            margin: 0 auto;
+        }
+
+        /* Header styles */
+        .header-title {
+            font-size: 16pt;
+            font-weight: 700;
+            text-align: center;
+            margin: 10px 0;
+            letter-spacing: 1px;
+        }
+
+        .company-logos {
+            text-align: center;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .logo-placeholder {
+            font-size: 8pt;
+            font-style: italic;
+            color: #666;
+        }
+
+        /* Info Table - Grid Layout */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 150px 15px 1fr 150px 15px 1fr;
+            gap: 0;
+            margin-bottom: 15px;
+            border: 1px solid rgb(255, 255, 255);
+        }
+
+        .info-cell {
+            border: 1px solid rgb(255, 255, 255);
+            padding: 4px 6px;
+            font-size: 9pt;
+            vertical-align: top;
+            min-height: 20px;
+        }
+
+        .info-label {
+            font-weight: 700;
+            background: white;
+            text-align: left;
+        }
+
+        .info-separator {
+            text-align: center;
+            font-weight: bold;
+            background: white;
+        }
+
+        .info-value {
+            background: white;
+            text-align: left;
+        }
+
+        .info-highlighted {
+            background: #FFC000 !important;
+        }
+
+        .info-note {
+            font-style: italic;
+            font-size: 7pt;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        /* Analysis table styles */
+        .analysis-section {
+            margin: 20px 0;
+        }
+
+        .analysis-title {
+            font-size: 12pt;
+            font-weight: 700;
+            text-align: left;
+            margin: 15px 0 5px 0;
+            background: white;
+        }
+
+        .analysis-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .analysis-table td {
+            border: 1px solid black;
+            padding: 3px 4px;
+            font-size: 8pt;
+            vertical-align: middle;
+        }
+
+        .fixed-header {
+            background: #CCCCCC;
+            font-weight: 700;
+            text-align: center;
+            font-size: 9pt;
+            width: 140px;
+        }
+
+        .attribute-header {
+            background: #D0CECE;
+            font-weight: 700;
+            text-align: center;
+            font-size: 9pt;
+            width: 140px;
+        }
+
+        .range-cell {
+            background: #D0CECE;
+            font-weight: 700;
+            text-align: center;
+            font-size: 8pt;
+            width: 60px;
+        }
+
+        .data-cell {
+            background: white;
+            text-align: center;
+            font-size: 8pt;
+            min-width: 80px;
+        }
+
+        .explanation-cell {
+            background: white;
+            text-align: center;
+            font-size: 6pt;
+            font-style: italic;
+            padding: 2px;
+            line-height: 1.1;
+        }
+
+        /* Microbiological table specific */
+        .micro-category {
+            background: #D0CECE;
+            font-weight: 700;
+            text-align: center;
+            font-size: 9pt;
+            vertical-align: middle;
+        }
+
+        /* Notes */
+        .note-text {
+            font-style: italic;
+            font-size: 8pt;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .note-left {
+            font-style: italic;
+            font-size: 8pt;
+            margin: 5px 0;
+            text-align: left;
+        }
+
+        /* Footer */
+        .production-facility {
+            margin: 20px 0;
+            font-size: 9pt;
+        }
+
+        .signature-section {
+            margin-top: 25px;
+        }
+
+        .signature-table {
+            border-collapse: collapse;
+            width: 200px;
+        }
+
+        .signature-table td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: center;
+            font-size: 9pt;
+        }
+
+        .signature-row {
+            height: 25px;
+        }
+
+        /* Hide elements */
+        .hide-field {
+            display: none;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                margin: 0;
+                padding: 10mm;
+            }
+
+            .certificate-container {
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="certificate-container">
+
+        <!-- HEADER -->
+        <div class="header-title">CERTIFICATE OF ANALYSIS</div>
+
+        <div class="company-logos">
+            <div style="display: flex; gap: 20px;">
+            </div>
+            <div class="logo-placeholder">{{logo-empresa}}</div>
+        </div>
+
+        <!-- BASIC INFORMATION GRID -->
+        <div class="info-grid">
+            <!-- Row 1 -->
+            <div class="info-cell info-label">Export Number</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value info-highlighted">
+                Fijo Bulk,Doypack
+                <div class="info-note">(Información se obtiene de menú 61.3.16 (Armado Contenedor))</div>
+            </div>
+            <div class="info-cell info-label">Product Description</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value info-highlighted">
+                Fijo Bulk, Doypack,Surfrut
+                <div class="info-note">(Información se obtiene de menú 61.3.16 (Armado Contenedor))</div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="info-cell info-label">Client</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value info-highlighted">
+                Fijo Bulk,Doypack, Surfrut
+                <div class="info-note">(Información se obtiene de menú 61.3.16 (Armado Contenedor))</div>
+            </div>
+            <div class="info-cell info-label">Material Number</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+                Opcional Material
+                <div class="info-note">Opcional (debiese ser alimentado por área comercial)</div>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="info-cell info-label">Brand Name</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+                Premium Brand
+                <div class="info-note">Opcional (debiese ser alimentado por área comercial)</div>
+            </div>
+            <div class="info-cell info-label">Product Code</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value info-highlighted">
+                BULK-001
+                <div class="info-note">(Información se obtiene de menú 61.3.16 (Armado Contenedor))</div>
+            </div>
+
+            <!-- Row 4 -->
+            <div class="info-cell info-label">Container Number</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value info-highlighted">
+                Fijo Bulk, Doypack
+                <div class="info-note">(Información se obtiene de menú 61.1.15)</div>
+            </div>
+            <div class="info-cell info-label">Specification ID</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value info-highlighted">
+                Fijo Bulk,Doypack,Surfrut
+                <div class="info-note">(Información se obtiene de menú 61.3.16 (Armado Contenedor))</div>
+            </div>
+
+            <!-- Row 5 -->
+            <div class="info-cell info-label">Seal Number</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value info-highlighted">
+                Fijo Bulk, Doypack
+                <div class="info-note">(Información se obtiene de menú 61.1.15)</div>
+            </div>
+            <div class="info-cell info-label">Manufacturing Site Location</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+                Dirección empresa
+            </div>
+
+            <!-- Row 6 -->
+            <div class="info-cell info-label">Order Number</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value info-highlighted">
+                Fijo Bulk, Doypack
+                <div class="info-note">(Información se obtiene de menú 61.3.16 (Armado Contenedor))</div>
+            </div>
+            <div class="info-cell info-label"></div>
+            <div class="info-cell info-separator"></div>
+            <div class="info-cell info-value"></div>
+
+            <!-- Row 7 -->
+            <div class="info-cell info-label">Invoice Number</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+                INV-2024-001
+                <div class="info-note">(Información se obtiene de menú 61.1.15)</div>
+            </div>
+            <div class="info-cell info-label"></div>
+            <div class="info-cell info-separator"></div>
+            <div class="info-cell info-value"></div>
+
+            <!-- Row 8 -->
+            <div class="info-cell info-label">Internal Container</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value info-highlighted">
+                Fijo Bulk, Doypack
+                <div class="info-note">(Información se obtiene de menú 61.3.16 (Armado Contenedor))</div>
+            </div>
+            <div class="info-cell info-label"></div>
+            <div class="info-cell info-separator"></div>
+            <div class="info-cell info-value"></div>
+        </div>
+
+        <div class="note-text">Todos estos encabezados con la opción de incluir o no</div>
+
+        <!-- PHYSICAL & CHEMICAL PROFILE -->
+        <div class="analysis-section">
+            <div class="analysis-title">Physical & Chemical Profile</div>
+
+            <table class="analysis-table">
+                <!-- Fixed Header Rows -->
+                <tr>
+                    <td class="fixed-header" colspan="2">Production Date DD/MM/YYYY</td>
+                </tr>
+
+                <tr>
+                    <td class="fixed-header" colspan="2">Expiration Date DD/MM/YYYY</td>
+                </tr>
+
+                <tr>
+                    <td class="fixed-header" colspan="2">Lot Number</td>
+                </tr>
+
+                <tr>
+                    <td class="fixed-header" colspan="2">Quantity (unidad de medida)</td>
+                </tr>
+
+                <!-- Attribute Rows -->
+                <tr>
+                    <td class="attribute-header">
+                        <strong>Atributo 1</strong>
+                        <div style="font-size: 7pt; font-weight: normal; font-style: italic;">(Metodología)</div>
+                    </td>
+                    <td class="range-cell">Rango</td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="attribute-header">
+                        <strong>Atributo 2</strong>
+                        <div style="font-size: 7pt; font-weight: normal; font-style: italic;">(Metodología)</div>
+                    </td>
+                    <td class="range-cell">Rango</td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="attribute-header">
+                        <strong>Atributo 3</strong>
+                        <div style="font-size: 7pt; font-weight: normal; font-style: italic;">(Metodología)</div>
+                    </td>
+                    <td class="range-cell">Rango</td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="attribute-header">
+                        <strong>Atributo 4</strong>
+                        <div style="font-size: 7pt; font-weight: normal; font-style: italic;">(Metodología)</div>
+                    </td>
+                    <td class="range-cell">Rango</td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                    <td class="explanation-cell">
+                        Promedio lote acorde a reporte (Para Purefruit) Valor Mínimo o Máximo para Surfrut. Según
+                        especificación (reporte armado contenedor menú 61.3.16)
+                    </td>
+                </tr>
+            </table>
+
+            <div class="note-text">Hasta los atributos necesarios que solicite especificación de cliente</div>
+
+            <!-- Conditional Notes -->
+            <div class="note-left" style="margin: 15px 0;">
+                * Multiple samples were taken and the value reported in the COA is a combination of these results.
+                The results of independent tests per box may vary. <span style="float: right; font-style: italic;">Nota
+                    para dp va siempre</span>
+            </div>
+
+            <div class="note-left" style="margin: 15px 0;">
+                *The results correspond to an average of the lot. <span style="float: right; font-style: italic;">Nota
+                    para Bulk va siempre</span>
+            </div>
+
+            <div class="note-left" style="margin: 15px 0;">
+                *Multiple samples were taken and the value reported on the COA is a combination of the highest levels
+                of these results that we detected based upon our sampling and testing. Independent test results per
+                carton may vary.
+                <span style="float: right; font-style: italic;">Nota para surfrut opcional</span>
+            </div>
+
+            <div style="text-align: right; font-style: italic; font-size: 8pt; margin: 15px 0;">
+                Todas estas notas con la opción de incluir o no
+            </div>
+        </div>
+
+        <!-- MICROBIOLOGICAL AND CONTAMINANTS PROFILE -->
+        <div class="analysis-section">
+            <div class="analysis-title">Microbiological and Contaminants Profile</div>
+
+            <table class="analysis-table">
+                <!-- Fixed Header Rows -->
+                <tr>
+                    <td class="fixed-header" colspan="3">Production Date DD/MM/YYYY</td>
+                </tr>
+
+                <tr>
+                    <td class="fixed-header" colspan="3">Expiration Date DD/MM/YYYY</td>
+                </tr>
+
+                <tr>
+                    <td class="fixed-header" colspan="3">Lot Number</td>
+                </tr>
+                <!-- Microbiological Section -->
+                <tr>
+                    <td class="micro-category" rowspan="2">Microbiological</td>
+                    <td class="attribute-header">
+                        <strong>Atributo 1</strong>
+                        <div style="font-size: 7pt; font-weight: normal; font-style: italic;">(Metodología)</div>
+                    </td>
+                    <td class="range-cell">Rango</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                </tr>
+
+                <tr>
+                    <td class="attribute-header">
+                        <strong>Atributo 2</strong>
+                        <div style="font-size: 7pt; font-weight: normal; font-style: italic;">(Metodología)</div>
+                    </td>
+                    <td class="range-cell">Rango</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                </tr>
+
+                <!-- Contaminants Section -->
+                <tr>
+                    <td class="micro-category" rowspan="3">Contaminants</td>
+                    <td class="attribute-header">
+                        <strong>Atributo 1</strong>
+                        <div style="font-size: 7pt; font-weight: normal; font-style: italic;">(Metodología)</div>
+                    </td>
+                    <td class="range-cell">Rango</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                </tr>
+
+                <tr>
+                    <td class="attribute-header">
+                        <strong>Atributo 2</strong>
+                        <div style="font-size: 7pt; font-weight: normal; font-style: italic;">(Metodología)</div>
+                    </td>
+                    <td class="range-cell">Rango</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                </tr>
+
+                <tr>
+                    <td class="attribute-header">
+                        <strong>Atributo 3</strong>
+                        <div style="font-size: 7pt; font-weight: normal; font-style: italic;">(Metodología)</div>
+                    </td>
+                    <td class="range-cell">Rango</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                    <td class="data-cell">Resultado lote</td>
+                </tr>
+            </table>
+
+            <div class="note-text">
+                Hasta los atributos necesarios que solicite especificación de cliente tanto para microbiología como para
+                contaminantes
+            </div>
+
+            <div class="note-left">
+                **The values for TPC, Coliform, E.Coli,Yeast, Mold, and Staph are based upon no less than 3 sets of
+                tests.
+                <span style="float: right; font-style: italic;">Esta nota con la opción de incluir o no (Para
+                    Surfrut)</span>
+            </div>
+        </div>
+
+        <!-- PRODUCTION FACILITY (Optional) -->
+        <div class="production-facility">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <strong>Production Facility:</strong>
+                    <div style="margin-left: 20px; margin-top: 8px;">
+                        <strong>PUREFRUIT CHILE S.A.</strong><br>
+                        Av. Ramón Freire 1390<br>
+                        Romeral, Curicó, Chile<br>
+                        RUT: 76.090.854-1<br>
+                        U.S. FDA Reg N°: 13012619644<br>
+                        U.S. FDA FCE N°: 25116
+                    </div>
+                </div>
+                <div style="font-style: italic; font-size: 8pt;">
+                    Con la opción de incluir o no (En Doypack)
+                </div>
+            </div>
+        </div>
+
+        <!-- SIGNATURE SECTION -->
+        <div class="signature-section">
+            <table class="signature-table">
+                <tr>
+                    <td><strong>Firma</strong></td>
+                </tr>
+                <tr class="signature-row">
+                    <td></td> <!-- Space for signature -->
+                </tr>
+                <tr>
+                    <td><strong>María González P.</strong></td>
+                </tr>
+                <tr>
+                    <td>Quality Manager</td>
+                </tr>
+                <tr>
+                    <td><strong>Purefruit Chile S.A.</strong></td>
+                </tr>
+                <tr>
+                    <td>15/06/2024</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,184 @@
+{
+    "exportNumber": "EXP-2024-001",
+    "productDescription": "Frozen Fruit Pulp Doypack",
+    "client": "Global Foods Inc.",
+    "materialNumber": "123213",
+    "brandName": "1223",
+    "productCode": "FEEDS34",
+    "containerNumber": "TO123",
+    "specificationId": "EC_2304_A",
+    "sealNumber": "123213213",
+    "manufacturingSiteLocation": "Chile",
+    "orderNumber": "OC3434",
+    "invoiceNumber": "21323",
+    "internalContainer": "SDK3ED",
+    "lots": [
+        {
+            "lotNumber": "A001",
+            "productionDate": "01/06/2025",
+            "expirationDate": "01/06/2026",
+            "quantity": "205"
+        },
+        {
+            "lotNumber": "A002",
+            "productionDate": "02/06/2025",
+            "expirationDate": "02/06/2026",
+            "quantity": "210"
+        },
+        {
+            "lotNumber": "A003",
+            "productionDate": "03/06/2025",
+            "expirationDate": "03/06/2026",
+            "quantity": "220"
+        },
+        {
+            "lotNumber": "A004",
+            "productionDate": "04/06/2025",
+            "expirationDate": "04/06/2026",
+            "quantity": "230"
+        },
+        {
+            "lotNumber": "A005",
+            "productionDate": "05/06/2025",
+            "expirationDate": "05/06/2026",
+            "quantity": "240"
+        },
+        {
+            "lotNumber": "A006",
+            "productionDate": "06/06/2025",
+            "expirationDate": "06/06/2026",
+            "quantity": "250"
+        }
+    ],
+    "physicalChemicalAttributes": [
+        {
+            "name": "Moisture",
+            "range": "10-15%",
+            "results": [
+                "12.1",
+                "12.3",
+                "12.0",
+                "12.5",
+                "12.2",
+                "12.4"
+            ]
+        },
+        {
+            "name": "Protein",
+            "range": "8-12%",
+            "results": [
+                "9.5",
+                "9.8",
+                "9.2",
+                "9.9",
+                "9.6",
+                "9.7"
+            ]
+        },
+        {
+            "name": "Fat",
+            "range": "2-5%",
+            "results": [
+                "3.1",
+                "3.2",
+                "3.0",
+                "3.3",
+                "3.1",
+                "3.2"
+            ]
+        }
+    ],
+    "microLots": [
+        {
+            "lotNumber": "M001",
+            "productionDate": "01/06/2025",
+            "expirationDate": "01/06/2026"
+        },
+        {
+            "lotNumber": "M002",
+            "productionDate": "02/06/2025",
+            "expirationDate": "02/06/2026"
+        },
+        {
+            "lotNumber": "M003",
+            "productionDate": "03/06/2025",
+            "expirationDate": "03/06/2026"
+        },
+        {
+            "lotNumber": "M004",
+            "productionDate": "04/06/2025",
+            "expirationDate": "04/06/2026"
+        }
+    ],
+    "showDoypackNote": true,
+    "showBulkNote": true,
+    "showSurfruitNote": true,
+    "microbiologicalAttributes": [
+        {
+            "name": "Total Plate Count",
+            "range": "<1000 CFU/g",
+            "results": [
+                "<10",
+                "<10",
+                "<10",
+                "<10"
+            ]
+        },
+        {
+            "name": "E. coli",
+            "range": "<10 CFU/g",
+            "results": [
+                "<1",
+                "<1",
+                "<1",
+                "<1"
+            ]
+        },
+        {
+            "name": "Salmonella",
+            "range": "Negative/25g",
+            "results": [
+                "Negative",
+                "Negative",
+                "Negative",
+                "Negative"
+            ]
+        }
+    ],
+    "contaminantAttributes": [
+        {
+            "name": "Lead",
+            "range": "<0.1 ppm",
+            "results": [
+                "<0.05",
+                "<0.05",
+                "<0.05",
+                "<0.05"
+            ]
+        },
+        {
+            "name": "Pesticides",
+            "range": "MRL Compliant",
+            "results": [
+                "Compliant",
+                "Compliant",
+                "Compliant",
+                "Compliant"
+            ]
+        }
+    ],
+    "showSurfruitMicroNote": true,
+    "showProductionFacility": true,
+    "facilityName": "PUREFRUIT CHILE S.A.",
+    "facilityAddress": "Av. Ramón Freire 1390",
+    "facilityCity": "Romeral",
+    "facilityRegion": "Curicó",
+    "facilityCountry": "Chile",
+    "facilityRut": "76.090.854-1",
+    "facilityFdaReg": "13012619644",
+    "facilityFdaFce": "25116",
+    "signerName": "Felipe Rodriguez",
+    "signerTitle": "Informatico",
+    "signerCompany": "Purefruit Chile S.A",
+    "signatureDate": "15/06/2025"
+}

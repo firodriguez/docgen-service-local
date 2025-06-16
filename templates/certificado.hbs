@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 8pt;
+            color: black;
+            margin: 0;
+            padding: 15px;
+            line-height: 1.1;
+        }
+
+        .certificate-container {
+            width: 100%;
+            max-width: 210mm;
+            margin: 0 auto;
+        }
+
+        /* Header styles */
+        .header-title {
+            font-size: 16pt;
+            font-weight: 700;
+            text-align: center;
+            margin: 10px 0;
+            letter-spacing: 1px;
+        }
+
+        .company-logos {
+            text-align: center;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .logo-placeholder {
+            font-size: 8pt;
+            font-style: italic;
+            color: #666;
+        }
+
+        /* Info Table - Grid Layout */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 150px 15px 1fr 150px 15px 1fr;
+            gap: 0;
+            margin-bottom: 15px;
+            border: 1px solid rgb(255, 255, 255);
+        }
+
+        .info-cell {
+            border: 1px solid rgb(255, 255, 255);
+            padding: 4px 6px;
+            font-size: 9pt;
+            vertical-align: top;
+            min-height: 20px;
+        }
+
+        .info-label {
+            font-weight: 700;
+            background: white;
+            text-align: left;
+        }
+
+        .info-separator {
+            text-align: center;
+            font-weight: bold;
+            background: white;
+        }
+
+        .info-value {
+            background: white;
+            text-align: left;
+        }
+
+        .info-note {
+            font-style: italic;
+            font-size: 7pt;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        /* Analysis table styles */
+        .analysis-section {
+            margin: 20px 0;
+        }
+
+        .analysis-title {
+            font-size: 12pt;
+            font-weight: 700;
+            text-align: left;
+            margin: 15px 0 5px 0;
+            background: white;
+        }
+
+        .analysis-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .analysis-table td {
+            border: 1px solid black;
+            padding: 3px 4px;
+            font-size: 8pt;
+            vertical-align: middle;
+        }
+
+        .fixed-header {
+            background: #CCCCCC;
+            font-weight: 700;
+            text-align: center;
+            font-size: 9pt;
+            width: 140px;
+        }
+
+        .attribute-header {
+            background: #D0CECE;
+            font-weight: 700;
+            text-align: center;
+            font-size: 9pt;
+            width: 140px;
+        }
+
+        .range-cell {
+            background: #D0CECE;
+            font-weight: 700;
+            text-align: center;
+            font-size: 8pt;
+            width: 60px;
+        }
+
+        .data-cell {
+            background: white;
+            text-align: center;
+            font-size: 8pt;
+            min-width: 80px;
+        }
+
+        .explanation-cell {
+            background: white;
+            text-align: center;
+            font-size: 6pt;
+            font-style: italic;
+            padding: 2px;
+            line-height: 1.1;
+        }
+
+        /* Microbiological table specific */
+        .micro-category {
+            background: #D0CECE;
+            font-weight: 700;
+            text-align: center;
+            font-size: 9pt;
+            vertical-align: middle;
+        }
+
+        /* Notes */
+        .note-text {
+            font-style: italic;
+            font-size: 8pt;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .note-left {
+            font-style: italic;
+            font-size: 8pt;
+            margin: 5px 0;
+            text-align: left;
+        }
+
+        /* Footer */
+        .production-facility {
+            margin: 20px 0;
+            font-size: 9pt;
+        }
+
+        .signature-section {
+            margin-top: 25px;
+        }
+
+        .signature-table {
+            border-collapse: collapse;
+            width: 200px;
+        }
+
+        .signature-table td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: center;
+            font-size: 9pt;
+        }
+
+        .signature-row {
+            height: 25px;
+        }
+
+        /* Hide elements */
+        .hide-field {
+            display: none;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                margin: 0;
+                padding: 10mm;
+            }
+
+            .certificate-container {
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="certificate-container">
+
+        <!-- HEADER -->
+        <div class="header-title">CERTIFICATE OF ANALYSIS</div>
+
+        <div class="company-logos">
+            <div style="display: flex; gap: 20px;">
+            </div>
+            <img src="/assets/logos/surfrut.png" alt="Logo" class="logo-placeholder">
+        </div>
+
+        <!-- BASIC INFORMATION GRID -->
+        <div class="info-grid">
+            <!-- Row 1 -->
+            <div class="info-cell info-label">Export Number</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+            {{exportNumber}}
+            </div>
+            <div class="info-cell info-label">Product Description</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+            {{productDescription}}
+            </div>
+
+            <!-- Row 2 -->
+            <div class="info-cell info-label">Client</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+            {{client}}
+            </div>
+            <div class="info-cell info-label">Material Number</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+            {{materialNumber}}
+            </div>
+
+            <!-- Row 3 -->
+            <div class="info-cell info-label">Brand Name</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+            {{brandName}}
+            </div>
+            <div class="info-cell info-label">Product Code</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+            {{productCode}}
+            </div>
+
+            <!-- Row 4 -->
+            <div class="info-cell info-label">Container Number</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+            {{containerNumber}}
+            </div>
+            <div class="info-cell info-label">Specification ID</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+            {{specificationId}}
+            </div>
+
+            <!-- Row 5 -->
+            <div class="info-cell info-label">Seal Number</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+            {{sealNumber}}
+            </div>
+            <div class="info-cell info-label">Manufacturing Site Location</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+            {{manufacturingSiteLocation}}
+            </div>
+
+            <!-- Row 6 -->
+            <div class="info-cell info-label">Order Number</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+            {{orderNumber}}
+            </div>
+            <div class="info-cell info-label"></div>
+            <div class="info-cell info-separator"></div>
+            <div class="info-cell info-value"></div>
+
+            <!-- Row 7 -->
+            <div class="info-cell info-label">Invoice Number</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+            {{invoiceNumber}}
+            </div>
+            <div class="info-cell info-label"></div>
+            <div class="info-cell info-separator"></div>
+            <div class="info-cell info-value"></div>
+
+            <!-- Row 8 -->
+            <div class="info-cell info-label">Internal Container</div>
+            <div class="info-cell info-separator">:</div>
+            <div class="info-cell info-value">
+            {{internalContainer}}
+            </div>
+            <div class="info-cell info-label"></div>
+            <div class="info-cell info-separator"></div>
+            <div class="info-cell info-value"></div>
+        </div>
+
+        <!-- PHYSICAL & CHEMICAL PROFILE -->
+        <div class="analysis-section">
+            <div class="analysis-title">Physical & Chemical Profile</div>
+        
+            <table class="analysis-table">
+                <!-- Fixed Header Rows with Dynamic Lot Columns -->
+                <tr>
+                    <td class="fixed-header" colspan="2">Production Date DD/MM/YYYY</td>
+                    {{#each lots}}
+                    <td class="data-cell">{{productionDate}}</td>
+                    {{/each}}
+                </tr>
+        
+                <tr>
+                    <td class="fixed-header" colspan="2">Expiration Date DD/MM/YYYY</td>
+                    {{#each lots}}
+                    <td class="data-cell">{{expirationDate}}</td>
+                    {{/each}}
+                </tr>
+        
+                <tr>
+                    <td class="fixed-header" colspan="2">Lot Number</td>
+                    {{#each lots}}
+                    <td class="data-cell">{{lotNumber}}</td>
+                    {{/each}}
+                </tr>
+        
+                <tr>
+                    <td class="fixed-header" colspan="2">Quantity (unidad de medida)</td>
+                    {{#each lots}}
+                    <td class="data-cell">{{quantity}}</td>
+                    {{/each}}
+                </tr>
+        
+                <!-- Dynamic Attribute Rows -->
+                {{#each physicalChemicalAttributes}}
+                <tr>
+                    <td class="attribute-header">
+                        <strong>{{name}}</strong>
+                    </td>
+                    <td class="range-cell">{{range}}</td>
+                    {{#each results}}
+                    <td class="explanation-cell">{{this}}</td>
+                    {{/each}}
+                </tr>
+                {{/each}}
+            </table>
+            <!-- Conditional Notes -->
+            {{#if showDoypackNote}}
+            <div class="note-left" style="margin: 15px 0;">
+                *Multiple samples were taken and the value reported in the COA is a combination of these results. The results of
+                independent tests per box may vary.
+            </div>
+            {{/if}}
+            {{#if showBulkNote}}
+            <div class="note-left" style="margin: 15px 0;">
+                *The results correspond to an average of the lot.
+            </div>
+            {{/if}}
+            {{#if showSurfruitNote}}
+            <div class="note-left" style="margin: 15px 0;">
+                *Multiple samples were taken and the value reported on the COA is a combination of the highest levels of these results
+                that we detected based upon our sampling and testing. Independent test results per carton
+                may vary.
+            </div>
+            {{/if}}
+        </div>
+
+        <!-- MICROBIOLOGICAL AND CONTAMINANTS PROFILE - VERSIÓN SIMPLIFICADA -->
+        <div class="analysis-section">
+            <div class="analysis-title">Microbiological and Contaminants Profile</div>
+        
+            <table class="analysis-table">
+                <!-- Fixed Header Rows -->
+                <tr>
+                    <td class="fixed-header" colspan="3">Production Date DD/MM/YYYY</td>
+                    {{#each microLots}}
+                    <td class="data-cell">{{productionDate}}</td>
+                    {{/each}}
+                </tr>
+        
+                <tr>
+                    <td class="fixed-header" colspan="3">Expiration Date DD/MM/YYYY</td>
+                    {{#each microLots}}
+                    <td class="data-cell">{{expirationDate}}</td>
+                    {{/each}}
+                </tr>
+        
+                <tr>
+                    <td class="fixed-header" colspan="3">Lot Number</td>
+                    {{#each microLots}}
+                    <td class="data-cell">{{lotNumber}}</td>
+                    {{/each}}
+                </tr>
+        
+                <!-- Microbiological Section Header -->
+                {{#if microbiologicalAttributes}}
+                <tr>
+                    <td class="micro-category" colspan="3"><strong>Microbiological</strong></td>
+                    {{#each microLots}}
+                    <td class="data-cell"></td>
+                    {{/each}}
+                </tr>
+        
+                {{#each microbiologicalAttributes}}
+                <tr>
+                    <td class="attribute-header" colspan="2">
+                        <strong>{{name}}</strong>
+                    </td>
+                    <td class="range-cell">{{range}}</td>
+                    {{#each results}}
+                    <td class="data-cell">{{this}}</td>
+                    {{/each}}
+                </tr>
+                {{/each}}
+                {{/if}}
+        
+                <!-- Contaminants Section Header -->
+                {{#if contaminantAttributes}}
+                <tr>
+                    <td class="micro-category" colspan="3"><strong>Contaminants</strong></td>
+                    {{#each microLots}}
+                    <td class="data-cell"></td>
+                    {{/each}}
+                </tr>
+        
+                {{#each contaminantAttributes}}
+                <tr>
+                    <td class="attribute-header" colspan="2">
+                        <strong>{{name}}</strong>
+                    </td>
+                    <td class="range-cell">{{range}}</td>
+                    {{#each results}}
+                    <td class="data-cell">{{this}}</td>
+                    {{/each}}
+                </tr>
+                {{/each}}
+                {{/if}}
+            </table>
+
+            {{#if showSurfruitMicroNote}}
+            <div class="note-left">
+            **The values for TPC, Coliform, E.Coli,Yeast, Mold, and Staph are based upon no less than 3 sets of tests.
+            </div>
+            {{/if}}
+        </div>
+
+        <!-- PRODUCTION FACILITY (Optional) -->
+        {{#if showProductionFacility}}
+        <div class="production-facility">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <strong>Production Facility:</strong>
+                    <div style="margin-left: 20px; margin-top: 8px;">
+                        <strong>{{facilityName}}</strong><br>
+                        {{facilityAddress}}<br>
+                        {{facilityCity}}, {{facilityRegion}}, {{facilityCountry}}<br>
+                        RUT: {{facilityRut}}<br>
+                        U.S. FDA Reg N°: {{facilityFdaReg}}<br>
+                        U.S. FDA FCE N°: {{facilityFdaFce}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/if}}
+
+        <!-- SIGNATURE SECTION -->
+        <div class="signature-section">
+            <table class="signature-table">
+                <tr>
+                    <td><strong>Firma</strong></td>
+                </tr>
+                <tr class="signature-row">
+                    <td></td> <!-- Space for signature -->
+                </tr>
+                <tr>
+                    <td><strong>{{signerName}}</strong></td>
+                </tr>
+                <tr>
+                    <td>{{signerTitle}}</td>
+                </tr>
+                <tr>
+                    <td><strong>{{signerCompany}}</strong></td>
+                </tr>
+                <tr>
+                    <td>{{signatureDate}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
