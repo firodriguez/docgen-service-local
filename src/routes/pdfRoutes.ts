@@ -348,6 +348,7 @@ router.post("/pdf/view", validateToken, async (req, res) => {
   const requestId = (req as any).requestId || "no-id";
   const referer = req.get("referer") || "-";
   const ip = req.ip || req.connection.remoteAddress || "-";
+  const isPreview = req.query.preview === 'true';
 
   if (!templateName || templateName.trim() === "") {
     logger.warn(`[${requestId}] Template no proporcionado | IP: ${ip}`);
@@ -364,22 +365,22 @@ router.post("/pdf/view", validateToken, async (req, res) => {
     );
     return res.status(404).json({
       error: true,
-      message: `Template "${templateName}" no encontrado`,
+      message: `Template \"${templateName}\" no encontrado`,
       requestId: requestId,
     });
   }
 
   try {
-    logger.info(`[${requestId}] Generando PDF: ${templateName} | IP: ${ip}`);
+    logger.info(`[${requestId}] Generando PDF: ${templateName} | IP: ${ip} | Preview: ${isPreview}`);
 
     const requestInfo = { ip, referer, requestId };
-    const pdfBuffer = await generatePDF(templateName, data, requestInfo);
+    const { pdfBuffer, documentId } = await generatePDF(templateName, data, requestInfo, isPreview);
 
     res.contentType("application/pdf");
     res.send(pdfBuffer);
 
     logger.info(
-      `[${requestId}] PDF generado exitosamente: ${templateName} | IP: ${ip}`
+      `[${requestId}] PDF generado exitosamente: ${templateName} | DocumentID: ${documentId} | IP: ${ip} | Preview: ${isPreview}`
     );
   } catch (error: any) {
     logger.error(
@@ -390,6 +391,39 @@ router.post("/pdf/view", validateToken, async (req, res) => {
       error: true,
       message: error.message || "Error interno del servidor",
       requestId: requestId,
+    });
+  }
+});
+
+// 🔍 Verificar y acceder a documento
+router.get("/verify/:documentId", async (req, res) => {
+  const { documentId } = req.params;
+  const ip = req.ip || req.connection.remoteAddress || "-";
+
+  try {
+    const documentPath = path.join(__dirname, "../../templates/documents", `${documentId}.pdf`);
+    
+    if (!fs.existsSync(documentPath)) {
+      logger.warn(`Documento no encontrado: ${documentId} | IP: ${ip}`);
+      return res.status(404).json({
+        error: true,
+        message: "Documento no encontrado",
+        documentId
+      });
+    }
+
+    // Enviar el PDF
+    res.contentType("application/pdf");
+    res.sendFile(documentPath);
+
+    logger.info(`Documento verificado y enviado: ${documentId} | IP: ${ip}`);
+  } catch (error: any) {
+    logger.error(`Error verificando documento ${documentId}: ${error.message} | IP: ${ip}`);
+    
+    res.status(500).json({
+      error: true,
+      message: "Error al acceder al documento",
+      documentId
     });
   }
 });

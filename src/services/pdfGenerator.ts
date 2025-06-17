@@ -5,14 +5,15 @@ import path from 'path';
 import fs from 'fs';
 import logger from './logger';
 import QRCode from 'qrcode';
+import crypto from 'crypto';
 
 // Función auxiliar para generar código QR
-const generateQRCode = async (data: string): Promise<string> => {
+const generateQRCode = async (verificationUrl: string): Promise<string> => {
   try {
-    return await QRCode.toDataURL(data, {
-      errorCorrectionLevel: 'H',
+    return await QRCode.toDataURL(verificationUrl, {
+      errorCorrectionLevel: 'M',
       margin: 1,
-      width: 200,
+      width: 100,
       color: {
         dark: '#000000',
         light: '#ffffff'
@@ -24,22 +25,47 @@ const generateQRCode = async (data: string): Promise<string> => {
   }
 };
 
-const generatePDF = async (templateName: string, data: any, requestInfo?: { ip?: string, referer?: string, requestId?: string }) => {
+// Función para generar un ID único para el documento
+const generateDocumentId = (data: any): string => {
+  const hash = crypto.createHash('sha256');
+  hash.update(JSON.stringify(data));
+  return hash.digest('hex').substring(0, 12);
+};
+
+// Función para guardar el PDF
+const savePDF = async (pdfBuffer: Buffer, documentId: string): Promise<string> => {
+  const documentsDir = path.join(__dirname, '../../templates/documents');
+  
+  // Crear directorio si no existe
+  if (!fs.existsSync(documentsDir)) {
+    fs.mkdirSync(documentsDir, { recursive: true });
+  }
+
+  const filePath = path.join(documentsDir, `${documentId}.pdf`);
+  await fs.promises.writeFile(filePath, pdfBuffer);
+  
+  return documentId;
+};
+
+const generatePDF = async (templateName: string, data: any, requestInfo?: { ip?: string, referer?: string, requestId?: string }, isPreview: boolean = false) => {
   const startTime = Date.now();
 
-  // Generar código QR con información de verificación
-  const verificationData = {
-    timestamp: new Date().toISOString(),
-    requestId: requestInfo?.requestId || 'unknown',
-    template: templateName
-  };
-  
-  const qrCodeDataUrl = await generateQRCode(JSON.stringify(verificationData));
-  
-  // Agregar el código QR a los datos del template
+  let qrCodeDataUrl = '';
+  let documentId = '';
+
+  if (!isPreview) {
+    documentId = generateDocumentId(data);
+    // Generar solo la URL de verificación
+    const baseUrl = process.env.API_URL || 'http://localhost:3331';
+    const verificationUrl = `${baseUrl}/api/verify/${documentId}`;
+    qrCodeDataUrl = await generateQRCode(verificationUrl);
+  }
+
+  // Agregar el código QR solo si no es preview
   const templateData = {
     ...data,
-    qrCode: qrCodeDataUrl
+    ...(qrCodeDataUrl && { qrCode: qrCodeDataUrl }),
+    ...(documentId && { documentId: documentId })
   };
 
   // 1. Cargar y compilar template SIEMPRE (sin cache)
@@ -60,7 +86,7 @@ const generatePDF = async (templateName: string, data: any, requestInfo?: { ip?:
 
   // 2. ✅ BASE_URL SIMPLE: localhost siempre en contenedor
   const port = process.env.PORT || '3000';
-  const baseUrl = `http://localhost:${port}`;
+  const puppeteerBaseUrl = `http://localhost:${port}`;
 
   // 3. Configuración inteligente de Puppeteer
   let browser;
@@ -134,11 +160,11 @@ const generatePDF = async (templateName: string, data: any, requestInfo?: { ip?:
   // 7. ✅ Establecer base URL para rutas relativas
   try {
     // Intentar navegar a health check para establecer base URL
-    await page.goto(`${baseUrl}/api/health`, {
+    await page.goto(`${puppeteerBaseUrl}/api/health`, {
       waitUntil: 'domcontentloaded',
       timeout: 5000
     });
-    logger.debug(`✅ Base URL establecida: ${baseUrl}`);
+    logger.debug(`✅ Base URL establecida: ${puppeteerBaseUrl}`);
   } catch (error) {
     logger.warn(`⚠️ No se pudo establecer base URL, usando setContent directo`);
   }
@@ -162,16 +188,24 @@ const generatePDF = async (templateName: string, data: any, requestInfo?: { ip?:
 
   await browser.close();
 
+  // Guardar PDF solo si no es preview
+  if (!isPreview && pdfBuffer) {
+    await savePDF(pdfBuffer, documentId);
+  }
+
   const duration = Date.now() - startTime;
   
   // ✅ Log siempre en producción con origen del llamado
   const origin = requestInfo?.ip || 'unknown';
   const referer = requestInfo?.referer || '-';
-  const requestId = requestInfo?.requestId || '-';
+  const requestIdLog = requestInfo?.requestId || '-';
   
-  logger.info(`⚡ PDF generado en ${duration}ms | Template: ${templateName} | IP: ${origin} | Referer: ${referer} | RequestID: ${requestId}`);
+  logger.info(`⚡ PDF generado en ${duration}ms | Template: ${templateName} | DocumentID: ${documentId} | IP: ${origin} | Referer: ${referer} | RequestID: ${requestIdLog} | Preview: ${isPreview}`);
 
-  return pdfBuffer;
+  return {
+    pdfBuffer,
+    documentId
+  };
 };
 
 export default generatePDF;

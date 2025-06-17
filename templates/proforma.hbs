@@ -32,6 +32,31 @@ td, th {
     border: none;
     padding: 4px;
 }
+.qr-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    text-align: center;
+}
+.qr-code {
+    width: 100px;
+    height: 100px;
+    max-width: 100px;
+    max-height: 100px;
+    display: block;
+    margin: 0 auto;
+    border: 2px solid #1976d2;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    background: #fff;
+}
+.qr-text {
+    font-size: 8pt;
+    color: #1976d2;
+    margin-top: 6px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
 </style>
 </head>
 <body>
@@ -74,5 +99,13 @@ td, th {
       <td colspan="4" style="text-align: right;">Total DDP Amount: US$ {{total_general}}</td>
     </tr>
   </table>
+
+  <!-- QR Code Section -->
+  {{#if qrCode}}
+  <div class="qr-container">
+    <img src="{{qrCode}}" alt="Código QR de verificación" class="qr-code">
+    <div class="qr-text">Escanea para verificar autenticidad</div>
+  </div>
+  {{/if}}
 </body>
 </html>
