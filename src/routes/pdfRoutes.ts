@@ -439,15 +439,19 @@ router.get('/documents/list', async (req, res) => {
     }
     const files = fs.readdirSync(documentsDir)
       .filter(f => f.endsWith('.pdf'));
+    const baseUrl = process.env.API_URL || 'http://localhost:3331';
     const documents = files.map(filename => {
       const filePath = path.join(documentsDir, filename);
       const stats = fs.statSync(filePath);
+      const documentId = filename.replace('.pdf', '');
       return {
         filename,
-        documentId: filename.replace('.pdf', ''),
+        documentId,
         size: stats.size,
-        created: stats.birthtime,
-        modified: stats.mtime
+        created: stats.mtime.toISOString(),
+        modified: stats.mtime.toISOString(),
+        downloadUrl: `${baseUrl}/api/verify/${documentId}`,
+        verifyUrl: `${baseUrl}/api/verify/${documentId}`
       };
     });
     res.status(200).json({ documents });
