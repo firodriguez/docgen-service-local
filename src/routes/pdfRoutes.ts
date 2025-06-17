@@ -4,7 +4,6 @@ import logger from "../services/logger";
 import { validateToken } from "../middleware/auth";
 import path from "path";
 import fs from "fs";
-import handlebars from "handlebars";
 
 const router = Router();
 
@@ -282,73 +281,13 @@ router.post("/templates/:templateName", validateToken, async (req, res) => {
   }
 });
 
-// 👁️ Preview HTML
-router.post(
-  "/templates/:templateName/preview",
-  validateToken,
-  async (req, res) => {
-    const templateName = req.params.templateName;
-    const requestId = (req as any).requestId || "no-id";
-    const ip = req.ip || req.connection.remoteAddress || "-";
-
-    try {
-      logger.info(`[${requestId}] Preview para: ${templateName} | IP: ${ip}`);
-
-      if (!templateExists(templateName)) {
-        return res.status(404).json({
-          error: true,
-          message: `Template '${templateName}' no encontrado`,
-          requestId: requestId,
-        });
-      }
-
-      const templatePath = path.join(
-        __dirname,
-        "../../templates",
-        `${templateName}.hbs`
-      );
-      const templateSrc = fs.readFileSync(templatePath, "utf-8");
-      const sampleData = getSampleData(templateName);
-
-      // 🎯 USAR HANDLEBARS NATIVO (más confiable)
-      const template = handlebars.compile(templateSrc);
-      const htmlContent = template(sampleData);
-
-      res.setHeader("Content-Type", "text/html; charset=utf-8");
-      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-      res.status(200).send(htmlContent);
-
-      logger.info(
-        `[${requestId}] Preview enviado: ${templateName} | IP: ${ip}`
-      );
-    } catch (error: any) {
-      logger.error(
-        `[${requestId}] Error en preview: ${error.message} | IP: ${ip}`
-      );
-
-      const errorHtml = `
-      <html><body style="font-family: Arial; padding: 20px; color: #e74c3c;">
-        <h2>❌ Error en Preview</h2>
-        <p><strong>Template:</strong> ${templateName}</p>
-        <p><strong>Error:</strong> ${error.message}</p>
-        <p><strong>Request ID:</strong> ${requestId}</p>
-      </body></html>
-    `;
-
-      res.setHeader("Content-Type", "text/html; charset=utf-8");
-      res.status(500).send(errorHtml);
-    }
-  }
-);
-
-// 📄 Generar PDF
+// 📄 Generar PDF optimizado
 router.post("/pdf/view", validateToken, async (req, res) => {
   const templateName = req.query.template as string;
   const data = req.body;
   const requestId = (req as any).requestId || "no-id";
   const referer = req.get("referer") || "-";
   const ip = req.ip || req.connection.remoteAddress || "-";
-  const isPreview = req.query.preview === 'true';
 
   if (!templateName || templateName.trim() === "") {
     logger.warn(`[${requestId}] Template no proporcionado | IP: ${ip}`);
@@ -371,16 +310,17 @@ router.post("/pdf/view", validateToken, async (req, res) => {
   }
 
   try {
-    logger.info(`[${requestId}] Generando PDF: ${templateName} | IP: ${ip} | Preview: ${isPreview}`);
+    logger.info(`[${requestId}] Generando PDF: ${templateName} | IP: ${ip}`);
 
     const requestInfo = { ip, referer, requestId };
-    const { pdfBuffer, documentId } = await generatePDF(templateName, data, requestInfo, isPreview);
+    const result = await generatePDF(templateName, data, requestInfo);
 
+    // Enviar PDF
     res.contentType("application/pdf");
-    res.send(pdfBuffer);
+    res.send(result.pdfBuffer);
 
     logger.info(
-      `[${requestId}] PDF generado exitosamente: ${templateName} | DocumentID: ${documentId} | IP: ${ip} | Preview: ${isPreview}`
+      `[${requestId}] PDF generado exitosamente: ${templateName} | DocumentID: ${result.documentId} | IP: ${ip}`
     );
   } catch (error: any) {
     logger.error(

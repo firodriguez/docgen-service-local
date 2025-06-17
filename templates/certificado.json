@@ -108,7 +108,5 @@
     "showBulkNote": true,
     "showSurfruitNote": true,
     "showSurfruitMicroNote": true,
-    "showProductionFacility": true,
-    "isPreview": true,
-    "qrCode": ""
+    "showProductionFacility": true
 }

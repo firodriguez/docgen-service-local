@@ -7,6 +7,10 @@ import logger from './logger';
 import QRCode from 'qrcode';
 import crypto from 'crypto';
 
+// Sistema de caché para PDFs
+const pdfCache = new Map();
+const CACHE_TTL = 1000 * 60 * 60; // 1 hora
+
 // Función auxiliar para generar código QR
 const generateQRCode = async (verificationUrl: string): Promise<string> => {
   try {
@@ -47,19 +51,46 @@ const savePDF = async (pdfBuffer: Buffer, documentId: string): Promise<string> =
   return documentId;
 };
 
-const generatePDF = async (templateName: string, data: any, requestInfo?: { ip?: string, referer?: string, requestId?: string }, isPreview: boolean = false) => {
+// Función para generar clave de caché
+const generateCacheKey = (templateName: string, data: any): string => {
+  const hash = crypto.createHash('sha256');
+  hash.update(templateName + JSON.stringify(data));
+  return hash.digest('hex');
+};
+
+// Función para limpiar caché expirado
+const cleanExpiredCache = () => {
+  const now = Date.now();
+  for (const [key, value] of pdfCache.entries()) {
+    if (now - value.timestamp > CACHE_TTL) {
+      pdfCache.delete(key);
+    }
+  }
+};
+
+const generatePDF = async (templateName: string, data: any, requestInfo?: { ip?: string, referer?: string, requestId?: string }) => {
   const startTime = Date.now();
+
+  // Verificar caché para PDFs
+  const cacheKey = generateCacheKey(templateName, data);
+  if (pdfCache.has(cacheKey)) {
+    const cached = pdfCache.get(cacheKey);
+    if (Date.now() - cached.timestamp < CACHE_TTL) {
+      logger.info(`⚡ PDF recuperado de caché | Template: ${templateName} | DocumentID: ${cached.documentId}`);
+      return {
+        pdfBuffer: cached.pdfBuffer,
+        documentId: cached.documentId
+      };
+    }
+  }
 
   let qrCodeDataUrl = '';
   let documentId = '';
 
-  if (!isPreview) {
-    documentId = generateDocumentId(data);
-    // Generar solo la URL de verificación
-    const baseUrl = process.env.API_URL || 'http://localhost:3331';
-    const verificationUrl = `${baseUrl}/api/verify/${documentId}`;
-    qrCodeDataUrl = await generateQRCode(verificationUrl);
-  }
+  documentId = generateDocumentId(data);
+  const baseUrl = process.env.API_URL || 'http://localhost:3331';
+  const verificationUrl = `${baseUrl}/api/verify/${documentId}`;
+  qrCodeDataUrl = await generateQRCode(verificationUrl);
 
   // Agregar el código QR solo si no es preview
   const templateData = {
@@ -189,8 +220,20 @@ const generatePDF = async (templateName: string, data: any, requestInfo?: { ip?:
   await browser.close();
 
   // Guardar PDF solo si no es preview
-  if (!isPreview && pdfBuffer) {
+  if (pdfBuffer) {
     await savePDF(pdfBuffer, documentId);
+  }
+
+  // Guardar en caché
+  if (pdfBuffer) {
+    pdfCache.set(cacheKey, {
+      pdfBuffer,
+      documentId,
+      timestamp: Date.now()
+    });
+    
+    // Limpiar caché expirado
+    cleanExpiredCache();
   }
 
   const duration = Date.now() - startTime;
@@ -200,7 +243,7 @@ const generatePDF = async (templateName: string, data: any, requestInfo?: { ip?:
   const referer = requestInfo?.referer || '-';
   const requestIdLog = requestInfo?.requestId || '-';
   
-  logger.info(`⚡ PDF generado en ${duration}ms | Template: ${templateName} | DocumentID: ${documentId} | IP: ${origin} | Referer: ${referer} | RequestID: ${requestIdLog} | Preview: ${isPreview}`);
+  logger.info(`⚡ PDF generado en ${duration}ms | Template: ${templateName} | DocumentID: ${documentId} | IP: ${origin} | Referer: ${referer} | RequestID: ${requestIdLog}`);
 
   return {
     pdfBuffer,

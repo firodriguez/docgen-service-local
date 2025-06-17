@@ -75,7 +75,7 @@ td, th {
 </style>
 </head>
 <body>
-  <p>PUREFRUIT CHILE S.A.<br>{Av. Ramón Freire 1390, Romeral }– Chile<br>RUT : 76 090 854 – 1<br>PLANT USD FDA REG.: 13012619644</p>
+  <p>PUREFRUIT CHILE S.A.<br>{{header.direccionempresa}}– Chile<br>RUT : 76 090 854 – 1<br>PLANT USD FDA REG.: 13012619644</p>
 
   <img src="/assets/logos/surfrut.png" alt="Logo" class="logo">
   <h1>Proforma Invoice - CLIENTE</h1>
@@ -114,6 +114,19 @@ td, th {
       <td colspan="4" style="text-align: right;">Total DDP Amount: US$ {{total_general}}</td>
     </tr>
   </table>
+
+  <!-- Marca de agua para preview -->
+  {{#if isPreview}}
+  <div
+    style="position: fixed; top: 40%; left: 20%; font-size: 3em; color: #e74c3c; opacity: 0.3; transform: rotate(-20deg); z-index: 9999; pointer-events: none;">
+    COPIA NO VERIFICADA
+  </div>
+  <div
+    style="position: fixed; bottom: 10px; left: 0; width: 100%; text-align: center; color: #e74c3c; font-size: 1.1em; font-weight: bold; opacity: 0.8; z-index: 9999;">
+    COPIA DE EDICIÓN NO VÁLIDA — Este documento no es oficial hasta ser generado.
+  </div>
+  {{/if}}
+
 
   <!-- QR Code Section -->
   {{#if qrCode}}
