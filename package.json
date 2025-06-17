@@ -25,6 +25,7 @@
     "express": "^4.18.2",
     "handlebars": "4.7.7",
     "puppeteer": "22.15.0",
+    "qrcode": "^1.5.4",
     "uuid": "^11.1.0",
     "winston": "^3.17.0"
   },
@@ -35,6 +36,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/morgan": "^1.9.10",
     "@types/node": "^20.5.9",
+    "@types/qrcode": "^1.5.5",
     "@types/supertest": "^2.0.16",
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^6.15.0",

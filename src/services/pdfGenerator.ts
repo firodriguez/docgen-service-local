@@ -4,9 +4,43 @@ import handlebars from 'handlebars';
 import path from 'path';
 import fs from 'fs';
 import logger from './logger';
+import QRCode from 'qrcode';
+
+// Función auxiliar para generar código QR
+const generateQRCode = async (data: string): Promise<string> => {
+  try {
+    return await QRCode.toDataURL(data, {
+      errorCorrectionLevel: 'H',
+      margin: 1,
+      width: 200,
+      color: {
+        dark: '#000000',
+        light: '#ffffff'
+      }
+    });
+  } catch (error) {
+    logger.error('Error generando código QR:', error);
+    throw error;
+  }
+};
 
 const generatePDF = async (templateName: string, data: any, requestInfo?: { ip?: string, referer?: string, requestId?: string }) => {
   const startTime = Date.now();
+
+  // Generar código QR con información de verificación
+  const verificationData = {
+    timestamp: new Date().toISOString(),
+    requestId: requestInfo?.requestId || 'unknown',
+    template: templateName
+  };
+  
+  const qrCodeDataUrl = await generateQRCode(JSON.stringify(verificationData));
+  
+  // Agregar el código QR a los datos del template
+  const templateData = {
+    ...data,
+    qrCode: qrCodeDataUrl
+  };
 
   // 1. Cargar y compilar template SIEMPRE (sin cache)
   const templatePath = path.join(__dirname, '../../templates', `${templateName}.hbs`);
@@ -22,7 +56,7 @@ const generatePDF = async (templateName: string, data: any, requestInfo?: { ip?:
   const template = handlebars.compile(templateSrc);
   logger.debug(`🔄 Template ${templateName} (hot-reload enabled)`);
 
-  const html = template(data);
+  const html = template(templateData);
 
   // 2. ✅ BASE_URL SIMPLE: localhost siempre en contenedor
   const port = process.env.PORT || '3000';
