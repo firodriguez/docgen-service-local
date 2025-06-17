@@ -428,4 +428,32 @@ router.get("/verify/:documentId", async (req, res) => {
   }
 });
 
+// ================================
+// ENDPOINT: Listar documentos autenticados
+// ================================
+router.get('/documents/list', async (req, res) => {
+  try {
+    const documentsDir = path.join(__dirname, '../../templates/documents');
+    if (!fs.existsSync(documentsDir)) {
+      return res.status(200).json({ documents: [] });
+    }
+    const files = fs.readdirSync(documentsDir)
+      .filter(f => f.endsWith('.pdf'));
+    const documents = files.map(filename => {
+      const filePath = path.join(documentsDir, filename);
+      const stats = fs.statSync(filePath);
+      return {
+        filename,
+        documentId: filename.replace('.pdf', ''),
+        size: stats.size,
+        created: stats.birthtime,
+        modified: stats.mtime
+      };
+    });
+    res.status(200).json({ documents });
+  } catch (error) {
+    res.status(500).json({ error: true, message: 'Error listando documentos', details: (error as any).message });
+  }
+});
+
 export default router;

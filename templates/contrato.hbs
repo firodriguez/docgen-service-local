@@ -12,6 +12,13 @@
         right: 20px;
         text-align: center;
     }
+    .qr-logo {
+        width: 60px;
+        margin-bottom: 6px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
     .qr-code {
         width: 100px;
         height: 100px;
@@ -24,12 +31,20 @@
         box-shadow: 0 2px 8px rgba(0,0,0,0.10);
         background: #fff;
     }
-    .qr-text {
+    .qr-lema {
         font-size: 8pt;
         color: #1976d2;
         margin-top: 6px;
         font-weight: bold;
         letter-spacing: 0.5px;
+        line-height: 1.2;
+    }
+    .qr-url {
+        font-size: 7pt;
+        color: #1976d2;
+        margin-top: 2px;
+        font-weight: normal;
+        word-break: break-all;
     }
   </style>
 </head>
@@ -42,8 +57,17 @@
   <!-- QR Code Section -->
   {{#if qrCode}}
   <div class="qr-container">
+      <img src="/assets/logos/surfrut.png" alt="Surfrut Logo" class="qr-logo">
       <img src="{{qrCode}}" alt="Código QR de verificación" class="qr-code">
-      <div class="qr-text">Escanea para verificar autenticidad</div>
+      <div class="qr-lema">
+          Documento autenticado por<br>
+          <b>DocGen-Server Surfrut</b>
+      </div>
+      <div class="qr-url">
+          <a href="https://generate.surfrut.com" style="color:#1976d2;text-decoration:none;" target="_blank">
+              https://generate.surfrut.com
+          </a>
+      </div>
   </div>
   {{/if}}
 </body>
