@@ -1,15 +1,26 @@
 import { Request, Response, NextFunction } from 'express';
 import logger from '../services/logger';
 
-// Middleware para validar token en el body
+// Middleware para validar token en el body o en el header Authorization
 export const validateToken = (req: Request, res: Response, next: NextFunction) => {
     const requestId = (req as any).requestId || 'no-id';
     const ip = req.ip || req.connection.remoteAddress || '-';
     const referer = req.get('referer') || '-';
 
-    // Extraer el token desde el body
+    // 1. Token desde el body (config.token)
     const { config } = req.body;
-    const providedToken = config?.token;
+    let providedToken = config?.token;
+
+    // 2. Token desde el header Authorization
+    if (!providedToken) {
+        const authHeader = req.get('Authorization');
+        if (authHeader) {
+            // Permitir formato "Bearer <token>" o solo "<token>"
+            providedToken = authHeader.startsWith('Bearer ')
+                ? authHeader.slice(7).trim()
+                : authHeader.trim();
+        }
+    }
 
     // Token esperado desde variables de entorno
     const expectedToken = process.env.API_TOKEN;
@@ -26,10 +37,10 @@ export const validateToken = (req: Request, res: Response, next: NextFunction) =
 
     // Validar que se proporcionó un token
     if (!providedToken) {
-        logger.warn(`[Request ID: ${requestId}] Token no proporcionado en config.token | IP: ${ip} | Referer: ${referer}`);
+        logger.warn(`[Request ID: ${requestId}] Token no proporcionado en config.token ni en Authorization | IP: ${ip} | Referer: ${referer}`);
         return res.status(401).json({
             error: true,
-            message: 'Token de autenticación requerido en config.token',
+            message: 'Token de autenticación requerido en config.token o en el header Authorization',
             requestId: requestId
         });
     }
@@ -45,7 +56,7 @@ export const validateToken = (req: Request, res: Response, next: NextFunction) =
     }
 
     // Token válido - eliminar config del body para no pasarlo al template
-    delete req.body.config;
+    if (config?.token) delete req.body.config;
 
     // Log de autenticación exitosa
     logger.info(`[Request ID: ${requestId}] Token válido - Acceso autorizado | IP: ${ip}`);
