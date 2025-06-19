@@ -13,14 +13,26 @@ router.post('/template-session', validateToken, async (req, res) => {
     const { templateName, data } = req.body;
     if (!templateName || !data) {
       logger.warn(`[${requestId}] Faltan datos requeridos | IP: ${ip}`);
-      return res.status(400).json({ error: 'Faltan datos requeridos' });
+      return res.status(400).json({
+        error: true,
+        message: 'Faltan datos requeridos',
+        requestId: requestId
+      });
     }
     const result = await createTemplateSession(templateName, data);
     logger.info(`[${requestId}] Sesión guardada correctamente | Template: ${templateName} | ID: ${result.id} | IP: ${ip}`);
-    res.json({ sessionId: result.id });
-  } catch (error) {
-    logger.error(`[${requestId}] Error al guardar la sesión | IP: ${ip} | Error: ${error}`);
-    res.status(500).json({ error: 'Error al guardar la sesión' });
+    res.status(200).json({
+      success: true,
+      sessionId: result.id,
+      requestId: requestId
+    });
+  } catch (error: any) {
+    logger.error(`[${requestId}] Error al guardar la sesión | IP: ${ip} | Error: ${error.message || error}`);
+    res.status(500).json({
+      error: true,
+      message: error.message || 'Error al guardar la sesión',
+      requestId: requestId
+    });
   }
 });
 
@@ -32,13 +44,25 @@ router.get('/template-session/:id', validateToken, async (req, res) => {
     const session = await getTemplateSession(req.params.id);
     if (!session) {
       logger.warn(`[${requestId}] Sesión no encontrada | ID: ${req.params.id} | IP: ${ip}`);
-      return res.status(404).json({ error: 'No encontrado' });
+      return res.status(404).json({
+        error: true,
+        message: 'No encontrado',
+        requestId: requestId
+      });
     }
     logger.info(`[${requestId}] Sesión recuperada correctamente | ID: ${req.params.id} | IP: ${ip}`);
-    res.json(session);
-  } catch (error) {
-    logger.error(`[${requestId}] Error al recuperar la sesión | ID: ${req.params.id} | IP: ${ip} | Error: ${error}`);
-    res.status(500).json({ error: 'Error al recuperar la sesión' });
+    res.status(200).json({
+      success: true,
+      session: session,
+      requestId: requestId
+    });
+  } catch (error: any) {
+    logger.error(`[${requestId}] Error al recuperar la sesión | ID: ${req.params.id} | IP: ${ip} | Error: ${error.message || error}`);
+    res.status(500).json({
+      error: true,
+      message: error.message || 'Error al recuperar la sesión',
+      requestId: requestId
+    });
   }
 });
 
