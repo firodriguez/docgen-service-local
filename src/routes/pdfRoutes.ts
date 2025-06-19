@@ -336,19 +336,23 @@ router.post("/pdf/view", validateToken, async (req, res) => {
 });
 
 // 🔍 Verificar y acceder a documento
-router.get("/verify/:documentId", async (req, res) => {
+router.get("/verify/:documentId", validateToken, async (req, res) => {
   const { documentId } = req.params;
   const ip = req.ip || req.connection.remoteAddress || "-";
 
   try {
-    const documentPath = path.join(__dirname, "../../templates/documents", `${documentId}.pdf`);
-    
+    const documentPath = path.join(
+      __dirname,
+      "../../templates/documents",
+      `${documentId}.pdf`
+    );
+
     if (!fs.existsSync(documentPath)) {
       logger.warn(`Documento no encontrado: ${documentId} | IP: ${ip}`);
       return res.status(404).json({
         error: true,
         message: "Documento no encontrado",
-        documentId
+        documentId,
       });
     }
 
@@ -358,12 +362,14 @@ router.get("/verify/:documentId", async (req, res) => {
 
     logger.info(`Documento verificado y enviado: ${documentId} | IP: ${ip}`);
   } catch (error: any) {
-    logger.error(`Error verificando documento ${documentId}: ${error.message} | IP: ${ip}`);
-    
+    logger.error(
+      `Error verificando documento ${documentId}: ${error.message} | IP: ${ip}`
+    );
+
     res.status(500).json({
       error: true,
       message: "Error al acceder al documento",
-      documentId
+      documentId,
     });
   }
 });
@@ -371,7 +377,7 @@ router.get("/verify/:documentId", async (req, res) => {
 // ================================
 // ENDPOINT: Listar documentos autenticados
 // ================================
-router.get('/documents/list', async (req, res) => {
+router.get('/documents/list', validateToken, async (req, res) => {
   try {
     const documentsDir = path.join(__dirname, '../../templates/documents');
     if (!fs.existsSync(documentsDir)) {
