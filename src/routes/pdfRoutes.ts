@@ -156,7 +156,7 @@ function getSampleData(templateName: string): any {
 // ================================
 
 // 📋 Lista de templates
-router.post("/templates", validateToken, async (req, res) => {
+router.get("/templates", validateToken, async (req, res) => {
   const requestId = (req as any).requestId || "no-id";
   const ip = req.ip || req.connection.remoteAddress || "-";
 
@@ -211,7 +211,7 @@ router.post("/templates", validateToken, async (req, res) => {
 });
 
 // 📄 Template específico con análisis optimizado
-router.post("/templates/:templateName", validateToken, async (req, res) => {
+router.get("/templates/:templateName", validateToken, async (req, res) => {
   const templateName = req.params.templateName;
   const requestId = (req as any).requestId || "no-id";
   const ip = req.ip || req.connection.remoteAddress || "-";
@@ -335,8 +335,8 @@ router.post("/pdf/view", validateToken, async (req, res) => {
   }
 });
 
-// 🔍 Verificar y acceder a documento
-router.get("/verify/:documentId", validateToken, async (req, res) => {
+// 🔍 Verificar y acceder a documento sin tokens
+router.get("/verify/:documentId", async (req, res) => {
   const { documentId } = req.params;
   const ip = req.ip || req.connection.remoteAddress || "-";
 
